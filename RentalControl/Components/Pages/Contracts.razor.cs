@@ -4,11 +4,10 @@ namespace RentalControl.Components.Pages;
 
 public partial class Contracts(HttpClient http) : ComponentBase
 {
-    private IEnumerable<Models.Contract>? ContractList { get; set; } = [];
-    private IList<Models.Contract> _selectedContracts = [];
+    private IEnumerable<Models.Contract>? ContractsList { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        ContractList = await http.GetFromJsonAsync<Models.Contract[]>("/api/v1/contracts");
+        ContractsList = await http.GetFromJsonAsync<Models.Contract[]>("/api/v1/contracts");
     }
 }

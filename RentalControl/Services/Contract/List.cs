@@ -13,7 +13,7 @@ public class List : ICarterModule
     }
 
     public record Query : IRequest<IEnumerable<Models.Contract>>;
-    
+
     public class Handler(Client client) : IRequestHandler<Query, IEnumerable<Models.Contract>>
     {
         public async ValueTask<IEnumerable<Models.Contract>> Handle(Query request, CancellationToken cancellationToken)

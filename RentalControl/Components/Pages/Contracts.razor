@@ -1,29 +1,39 @@
 @page "/contracts"
+@using RentalControl.Components.Models
+@rendermode InteractiveServer
 
 <PageTitle>Contracts</PageTitle>
 
 <h3>Contracts</h3>
 
-@if (ContractList is not null)
+@if (ContractsList is null)
 {
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
-                    FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
-                    PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" Data="@ContractList"
-                    ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or"
-                    SelectionMode="DataGridSelectionMode.Single" @bind-Value=@_selectedContracts>
-        <Columns>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.Address)" Title="Address" Frozen="true" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.Business)" Title="Business" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.Rent)" Title="Rent" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.Deposit)" Title="Deposit" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.Status)" Title="Status" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.StartDate)" Title="Start Date" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.EndDate)" Title="End Date" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Contract.Type)" Title="Type" Width="200px"/>
-        </Columns>
-    </RadzenDataGrid>
+    <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
 }
 else
 {
-    <p>Loading contracts...</p>
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
+                    FilterMode="FilterMode.CheckBoxList" AllowSorting="true" PageSize="10" AllowPaging="true"
+                    PagerHorizontalAlign="HorizontalAlign.Center" ShowPagingSummary="true"
+                    Data="@ContractsList" ColumnWidth="300px" SelectionMode="DataGridSelectionMode.Single">
+        <Columns>
+            <RadzenDataGridColumn Property="Tenant.Name" Title="Arrendatario" Width="160px" Frozen="true">
+                <Template Context="contract">
+                    @contract.Tenant.Name
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="Address.ShortAddress" Title="Direccion" Width="260px" Frozen="true">
+                <Template Context="contract">
+                    @contract.Address.ShortAddress
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(Contract.Deposit)" Title="Deposito" FormatString="$ {0}" Width="140px"/>
+            <RadzenDataGridColumn Property="@nameof(Contract.Rent)" Title="Renta" FormatString="$ {0}" Width="140px"/>
+            <RadzenDataGridColumn Property="@nameof(Contract.Business)" Title="Negocio" Width="160px"/>
+            <RadzenDataGridColumn Property="@nameof(Contract.StartDate)" Title="Fecha de inicio" Width="250px"/>
+            <RadzenDataGridColumn Property="@nameof(Contract.EndDate)" Title="Fecha de termino" Width="250px"/>
+            <RadzenDataGridColumn Property="@nameof(Contract.Status)" Title="Estado" Width="130px"/>
+            <RadzenDataGridColumn Property="@nameof(Contract.Type)" Title="Tipo" Width="130px"/>
+        </Columns>
+    </RadzenDataGrid>
 }

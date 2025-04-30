@@ -1,24 +1,29 @@
 @page "/tenants"
-<PageTitle>Tenants</PageTitle>
+@using RentalControl.Components.Models
+@rendermode InteractiveServer
+<PageTitle>Arrendatarios</PageTitle>
 
-<h3>Tenants</h3>
+<h3>Arrendatarios</h3>
 
-@if (TenantList is not null)
+@if (TenantList is null)
 {
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
-                    FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
-                    PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" Data="@TenantList"
-                    ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or"
-                    SelectionMode="DataGridSelectionMode.Single" @bind-Value=@_selectedTenants>
-        <Columns>
-            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Name)" Title="Name" Frozen="true" Width="160px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Email)" Title="Email" Width="160px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Phone)" Title="Phone" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Address)" Title="Address" Width="200px"/>
-        </Columns>
-    </RadzenDataGrid>
+    <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
 }
 else
 {
-    <p>Loading tenants...</p>
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
+                    FilterMode="FilterMode.CheckBoxList" AllowSorting="true" PageSize="10" AllowPaging="true"
+                    PagerHorizontalAlign="HorizontalAlign.Center" ShowPagingSummary="true"
+                    Data="@TenantList" ColumnWidth="300px" SelectionMode="DataGridSelectionMode.Single">
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(Tenant.Name)" Title="Nombre" Width="150px" Frozen="true"/>
+            <RadzenDataGridColumn Property="@nameof(Tenant.Email)" Title="Email" Width="150px"/>
+            <RadzenDataGridColumn Property="@nameof(Tenant.Phone)" Title="Telefono" Width="150px"/>
+            <RadzenDataGridColumn Title="Dirección" Width="150px" Frozen="true">
+                <Template Context="tenant">
+                    @tenant.Address.ShortAddress
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
 }
