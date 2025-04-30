@@ -1,0 +1,7 @@
+﻿services:
+  rentalcontrol:
+    image: rentalcontrol
+    build:
+      context: .
+      dockerfile: RentalControl/Dockerfile
+

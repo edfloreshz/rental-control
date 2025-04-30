@@ -1,0 +1,24 @@
+@page "/tenants"
+<PageTitle>Tenants</PageTitle>
+
+<h3>Tenants</h3>
+
+@if (TenantList is not null)
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
+                    FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
+                    PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" Data="@TenantList"
+                    ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or"
+                    SelectionMode="DataGridSelectionMode.Single" @bind-Value=@_selectedTenants>
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Name)" Title="Name" Frozen="true" Width="160px"/>
+            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Email)" Title="Email" Width="160px"/>
+            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Phone)" Title="Phone" Width="200px"/>
+            <RadzenDataGridColumn Property="@nameof(Models.Tenant.Address)" Title="Address" Width="200px"/>
+        </Columns>
+    </RadzenDataGrid>
+}
+else
+{
+    <p>Loading tenants...</p>
+}
