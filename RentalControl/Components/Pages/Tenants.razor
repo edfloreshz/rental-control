@@ -1,29 +1,19 @@
 @page "/tenants"
-@using RentalControl.Components.Models
-@rendermode InteractiveServer
-<PageTitle>Arrendatarios</PageTitle>
 
-<h3>Arrendatarios</h3>
+<PageTitle>Arrendatarios</PageTitle>
 
 @if (TenantList is null)
 {
-    <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
-                    FilterMode="FilterMode.CheckBoxList" AllowSorting="true" PageSize="10" AllowPaging="true"
-                    PagerHorizontalAlign="HorizontalAlign.Center" ShowPagingSummary="true"
-                    Data="@TenantList" ColumnWidth="300px" SelectionMode="DataGridSelectionMode.Single">
+    <MudDataGrid Items="@TenantList">
         <Columns>
-            <RadzenDataGridColumn Property="@nameof(Tenant.Name)" Title="Nombre" Width="150px" Frozen="true"/>
-            <RadzenDataGridColumn Property="@nameof(Tenant.Email)" Title="Email" Width="150px"/>
-            <RadzenDataGridColumn Property="@nameof(Tenant.Phone)" Title="Telefono" Width="150px"/>
-            <RadzenDataGridColumn Title="Dirección" Width="150px" Frozen="true">
-                <Template Context="tenant">
-                    @tenant.Address.ShortAddress
-                </Template>
-            </RadzenDataGridColumn>
+            <PropertyColumn Property="x => x.Name"/>
+            <PropertyColumn Property="x => x.Email" />
+            <PropertyColumn Property="x => x.Phone" />
+            <PropertyColumn Property="x => x.Address.ShortAddress" />
         </Columns>
-    </RadzenDataGrid>
+    </MudDataGrid>
 }

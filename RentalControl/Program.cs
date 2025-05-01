@@ -1,5 +1,5 @@
 using Carter;
-using Radzen;
+using MudBlazor.Services;
 using RentalControl.Components;
 using Supabase.Postgrest;
 
@@ -10,7 +10,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMediator();
 builder.Services.AddCarter();
-builder.Services.AddRadzenComponents();
+builder.Services.AddMudServices();
+
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.Configuration["Api:Url"]!) });
 builder.Services.AddSingleton(new Client(builder.Configuration["Postgrest:Url"]!));
 

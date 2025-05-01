@@ -1,39 +1,24 @@
 @page "/contracts"
-@using RentalControl.Components.Models
-@rendermode InteractiveServer
 
-<PageTitle>Contracts</PageTitle>
-
-<h3>Contracts</h3>
+<PageTitle>Contratos</PageTitle>
 
 @if (ContractsList is null)
 {
-    <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
-                    FilterMode="FilterMode.CheckBoxList" AllowSorting="true" PageSize="10" AllowPaging="true"
-                    PagerHorizontalAlign="HorizontalAlign.Center" ShowPagingSummary="true"
-                    Data="@ContractsList" ColumnWidth="300px" SelectionMode="DataGridSelectionMode.Single">
+    <MudDataGrid Items="@ContractsList">
         <Columns>
-            <RadzenDataGridColumn Property="Tenant.Name" Title="Arrendatario" Width="160px" Frozen="true">
-                <Template Context="contract">
-                    @contract.Tenant.Name
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn Property="Address.ShortAddress" Title="Direccion" Width="260px" Frozen="true">
-                <Template Context="contract">
-                    @contract.Address.ShortAddress
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn Property="@nameof(Contract.Deposit)" Title="Deposito" FormatString="$ {0}" Width="140px"/>
-            <RadzenDataGridColumn Property="@nameof(Contract.Rent)" Title="Renta" FormatString="$ {0}" Width="140px"/>
-            <RadzenDataGridColumn Property="@nameof(Contract.Business)" Title="Negocio" Width="160px"/>
-            <RadzenDataGridColumn Property="@nameof(Contract.StartDate)" Title="Fecha de inicio" Width="250px"/>
-            <RadzenDataGridColumn Property="@nameof(Contract.EndDate)" Title="Fecha de termino" Width="250px"/>
-            <RadzenDataGridColumn Property="@nameof(Contract.Status)" Title="Estado" Width="130px"/>
-            <RadzenDataGridColumn Property="@nameof(Contract.Type)" Title="Tipo" Width="130px"/>
+            <PropertyColumn Property="x => x.Tenant.Name"/>
+            <PropertyColumn Property="x => x.Address.ShortAddress" />
+            <PropertyColumn Property="x => x.Deposit" />
+            <PropertyColumn Property="x => x.Rent" />
+            <PropertyColumn Property="x => x.Business" />
+            <PropertyColumn Property="x => x.StartDate" />
+            <PropertyColumn Property="x => x.EndDate" />
+            <PropertyColumn Property="x => x.Status" />
+            <PropertyColumn Property="x => x.Type" />
         </Columns>
-    </RadzenDataGrid>
+    </MudDataGrid>
 }

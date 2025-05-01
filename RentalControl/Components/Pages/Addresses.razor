@@ -1,29 +1,21 @@
 @page "/addresses"
-@using RentalControl.Components.Models
-@rendermode InteractiveServer
 
 <PageTitle>Direcciones</PageTitle>
 
-<h3>Direcciones</h3>
-
 @if (AddressesList is null)
 {
-    <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" 
-                    FilterMode="FilterMode.CheckBoxList" AllowSorting="true" PageSize="10" AllowPaging="true" 
-                    PagerHorizontalAlign="HorizontalAlign.Center" ShowPagingSummary="true" 
-                    Data="@AddressesList" ColumnWidth="300px" SelectionMode="DataGridSelectionMode.Single">
+    <MudDataGrid Items="@AddressesList">
         <Columns>
-            <RadzenDataGridColumn Property="@nameof(Address.Street)" Title="Calle" Width="200px" Frozen="true"/>
-            <RadzenDataGridColumn Property="@nameof(Address.Number)" Title="Numero" Width="120px"/>
-            <RadzenDataGridColumn Property="@nameof(Address.Neighborhood)" Title="Colonia" Width="160px"/>
-            <RadzenDataGridColumn Property="@nameof(Address.City)" Title="Ciudad" Width="160px"/>
-            <RadzenDataGridColumn Property="@nameof(Address.State)" Title="Estado" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Address.ZipCode)" Title="Codigo Postal" Width="200px"/>
-            <RadzenDataGridColumn Property="@nameof(Address.Country)" Title="Pais" Width="160px"/>
+            <PropertyColumn Property="x => x.Street"/>
+            <PropertyColumn Property="x => x.Number" />
+            <PropertyColumn Property="x => x.Neighborhood" />
+            <PropertyColumn Property="x => x.City" />
+            <PropertyColumn Property="x => x.State" />
+            <PropertyColumn Property="x => x.ZipCode" />
         </Columns>
-    </RadzenDataGrid>
+    </MudDataGrid>
 }

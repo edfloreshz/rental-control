@@ -22,7 +22,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Radzen.Blazor" Version="6.6.4" />
+      <PackageReference Include="MudBlazor" Version="8.6.0" />
       <PackageReference Include="Supabase.Postgrest" Version="4.1.0" />
     </ItemGroup>
 

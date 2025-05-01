@@ -1,24 +1,54 @@
 ﻿@inherits LayoutComponentBase
 
-<RadzenComponents @rendermode="InteractiveServer" />
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<RadzenLayout>
-    <RadzenHeader Style="padding: 4px">
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)" />
-            <RadzenLabel Text="Control de Renta" />
-        </RadzenStack>
-    </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="@_sidebarExpanded">
-        <NavBar/>
-    </RadzenSidebar>
-    <RadzenBody>
-        <div class="rz-p-4">
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        <MudSpacer />
+        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Contratos de Renta</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Icon="@Icons.Material.Filled.Home" Href="/" Match="NavLinkMatch.All">Inicio</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Description" Href="/contracts" Match="NavLinkMatch.Prefix">Contratos</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Person" Href="/tenants"  Match="NavLinkMatch.Prefix">Arrendatarios</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Pin" Href="/addresses"  Match="NavLinkMatch.Prefix">Direcciones</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent Class="pt-16 px-16">
+        <MudContainer Class="mt-6">
             @Body
-        </div>
-    </RadzenBody>
-</RadzenLayout>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
-    bool _sidebarExpanded = true;
+    private bool _isDarkMode;
+    bool _drawerOpen;
+
+    readonly MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = Colors.Teal.Default,
+            Secondary = Colors.Teal.Accent4,
+            AppbarBackground = Colors.Teal.Default,
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = Colors.Teal.Lighten1
+        }
+    };
+    
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
 }
