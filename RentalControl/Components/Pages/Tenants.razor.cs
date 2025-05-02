@@ -3,7 +3,6 @@ using Mapster;
 using Mediator;
 using Microsoft.AspNetCore.Components;
 using RentalControl.Components.Models;
-using RentalControl.Services.Tenant;
 
 namespace RentalControl.Components.Pages;
 
@@ -13,8 +12,8 @@ public partial class Tenants(ISender sender) : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var list = await sender.Send(new List.GetTenantsQuery());
-        Items = list.Adapt<ObservableCollection<Tenant>>();
+        var items = await sender.Send(new Endpoints.Tenant.List.Query());
+        Items = items.Adapt<ObservableCollection<Tenant>>();
     }
 
     private void AddItem()

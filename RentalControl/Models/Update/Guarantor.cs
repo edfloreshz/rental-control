@@ -1,4 +1,4 @@
-namespace RentalControl.Models;
+namespace RentalControl.Models.Update;
 
 public class Guarantor
 {

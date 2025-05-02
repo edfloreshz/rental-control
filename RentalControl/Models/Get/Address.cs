@@ -1,4 +1,4 @@
-namespace RentalControl.Models;
+namespace RentalControl.Models.Get;
 
 public class Address
 {

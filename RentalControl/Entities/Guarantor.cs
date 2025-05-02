@@ -6,7 +6,7 @@ namespace RentalControl.Entities;
 [Table("Guarantors")]
 public class Guarantor : BaseModel
 {
-    [PrimaryKey] public Guid Id { get; set; }
+    [PrimaryKey] public Guid Id { get; set; } = Guid.NewGuid();
     [Column] public Guid AddressId { get; set; }
     [Column] public string Name { get; set; } = string.Empty;
     [Column] public string Phone { get; set; } = string.Empty;
