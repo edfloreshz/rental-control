@@ -2,20 +2,32 @@
 
 <PageTitle>Direcciones</PageTitle>
 
-@if (AddressesList is null)
+@if (Items is null)
 {
     <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
-    <MudDataGrid Items="@AddressesList">
+    <MudDataGrid Items="@Items">
+        <ToolBarContent>
+            <MudText>Contratos</MudText>
+            <MudSpacer/>
+            <MudButton OnClick="@AddItem" Variant="Variant.Filled">Agregar</MudButton>
+        </ToolBarContent>
         <Columns>
             <PropertyColumn Property="x => x.Street"/>
-            <PropertyColumn Property="x => x.Number" />
-            <PropertyColumn Property="x => x.Neighborhood" />
-            <PropertyColumn Property="x => x.City" />
-            <PropertyColumn Property="x => x.State" />
-            <PropertyColumn Property="x => x.ZipCode" />
+            <PropertyColumn Property="x => x.Number"/>
+            <PropertyColumn Property="x => x.Neighborhood"/>
+            <PropertyColumn Property="x => x.City"/>
+            <PropertyColumn Property="x => x.State"/>
+            <PropertyColumn Property="x => x.ZipCode"/>
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="@(() => RemoveItem(context.Item))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete"/>
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
     </MudDataGrid>
 }

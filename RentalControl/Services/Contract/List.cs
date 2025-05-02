@@ -9,14 +9,14 @@ public class List : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/v1/contracts", (ISender sender) => sender.Send(new Query()));
+        app.MapGet("/api/v1/contracts", (ISender sender) => sender.Send(new GetContractsQuery()));
     }
 
-    public record Query : IRequest<IEnumerable<Models.Contract>>;
+    public record GetContractsQuery : IRequest<IEnumerable<Models.Contract>>;
 
-    public class Handler(Client client) : IRequestHandler<Query, IEnumerable<Models.Contract>>
+    public class Handler(Client client) : IRequestHandler<GetContractsQuery, IEnumerable<Models.Contract>>
     {
-        public async ValueTask<IEnumerable<Models.Contract>> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<IEnumerable<Models.Contract>> Handle(GetContractsQuery request, CancellationToken cancellationToken)
         {
             var contracts = await client
                 .Table<Entities.Contract>()

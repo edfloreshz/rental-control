@@ -19,6 +19,13 @@ else
             <PropertyColumn Property="x => x.Email"/>
             <PropertyColumn Property="x => x.Phone"/>
             <PropertyColumn Property="x => x.Address.ShortAddress"/>
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="@(() => RemoveItem(context.Item))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete"/>
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
     </MudDataGrid>
 }
