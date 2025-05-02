@@ -2,18 +2,23 @@
 
 <PageTitle>Arrendatarios</PageTitle>
 
-@if (TenantList is null)
+@if (Items is null)
 {
     <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
-    <MudDataGrid Items="@TenantList">
+    <MudDataGrid Items="@Items">
+        <ToolBarContent>
+            <MudText>Arrendatarios</MudText>
+            <MudSpacer/>
+            <MudButton OnClick="@AddItem" Variant="Variant.Filled">Agregar</MudButton>
+        </ToolBarContent>
         <Columns>
             <PropertyColumn Property="x => x.Name"/>
-            <PropertyColumn Property="x => x.Email" />
-            <PropertyColumn Property="x => x.Phone" />
-            <PropertyColumn Property="x => x.Address.ShortAddress" />
+            <PropertyColumn Property="x => x.Email"/>
+            <PropertyColumn Property="x => x.Phone"/>
+            <PropertyColumn Property="x => x.Address.ShortAddress"/>
         </Columns>
     </MudDataGrid>
 }

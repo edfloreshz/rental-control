@@ -15,6 +15,4 @@ public class Address : BaseModel
     [Column] public string ZipCode { get; set; } = string.Empty;
     [Column] public string Country { get; set; } = string.Empty;
     [Column] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [Reference(typeof(Contract))] public List<Contract> Contracts { get; set; } = [];
 }

@@ -14,5 +14,4 @@ public class Tenant : BaseModel
     [Column] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [Reference(typeof(Address))] public Address Address { get; set; } = new();
-    [Reference(typeof(Contract))] public List<Contract> Contracts { get; set; } = [];
 }

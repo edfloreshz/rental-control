@@ -13,9 +13,7 @@ public class Address
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool Selected { get; set; }
 
-    public List<Tenant> Tenants { get; set; } = [];
     public List<Contract> Contracts { get; set; } = [];
-    public List<Guarantor> Guarantors { get; set; } = [];
     
     public string ShortAddress => $"{Street} {Number}, {Neighborhood}";
     public string FullAddress => $"{Street} {Number}, {Neighborhood}, {City}, {State}, {ZipCode}, {Country}";
