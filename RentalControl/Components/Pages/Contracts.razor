@@ -15,15 +15,15 @@ else
             <MudButton OnClick="@AddItem" Variant="Variant.Filled">Agregar</MudButton>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="x => x.Tenant.Name"/>
-            <PropertyColumn Property="x => x.Address.ShortAddress"/>
-            <PropertyColumn Property="x => x.Deposit"/>
-            <PropertyColumn Property="x => x.Rent"/>
-            <PropertyColumn Property="x => x.Business"/>
-            <PropertyColumn Property="x => x.StartDate"/>
-            <PropertyColumn Property="x => x.EndDate"/>
-            <PropertyColumn Property="x => x.Status"/>
-            <PropertyColumn Property="x => x.Type"/>
+            <PropertyColumn Property="x => x.Tenant.Name" Title="Nombre"/>
+            <PropertyColumn Property="x => x.Address.ShortAddress" Title="Dirección"/>
+            <PropertyColumn Property="x => x.Deposit" Title="Deposito"/>
+            <PropertyColumn Property="x => x.Rent" Title="Renta"/>
+            <PropertyColumn Property="x => x.Business" Title="Negocio"/>
+            <PropertyColumn Property="x => x.StartDate" Title="Inicio"/>
+            <PropertyColumn Property="x => x.EndDate" Title="Termino"/>
+            <PropertyColumn Property="x => x.Status" Title="Estado"/>
+            <PropertyColumn Property="x => x.Type" Title="Tipo"/>
             <TemplateColumn>
                 <CellTemplate>
                     <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="@(() => RemoveItem(context.Item))">
