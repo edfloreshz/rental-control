@@ -3,7 +3,7 @@ using Mapster;
 using Mediator;
 using Microsoft.AspNetCore.Components;
 using RentalControl.Components.Models;
-using RentalControl.Endpoints.Addresses;
+using CSharpFunctionalExtensions;
 
 namespace RentalControl.Components.Pages;
 
@@ -13,8 +13,13 @@ public partial class Addresses(ISender sender) : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var list = await sender.Send(new List.Query());
-        Items = list.Adapt<ObservableCollection<Address>>();
+        var result = await sender.Send(new Endpoints.Addresses.List.Query());
+        result.Match(SetItems, Console.WriteLine);
+    }
+    
+    private void SetItems(RentalControl.Models.Get.Address[] items)
+    {
+        Items = items.Adapt<ObservableCollection<Address>>();
     }
 
     private void AddItem()

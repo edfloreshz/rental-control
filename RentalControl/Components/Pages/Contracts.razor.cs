@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using CSharpFunctionalExtensions;
 using Mapster;
 using Mediator;
 using Microsoft.AspNetCore.Components;
@@ -12,7 +13,12 @@ public partial class Contracts(ISender sender) : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var items = await sender.Send(new Endpoints.Contract.List.Query());
+        var result = await sender.Send(new Endpoints.Contract.List.Query());
+        result.Match(SetItems, Console.WriteLine);
+    }
+    
+    private void SetItems(RentalControl.Models.Get.Contract[] items)
+    {
         Items = items.Adapt<ObservableCollection<Contract>>();
     }
 

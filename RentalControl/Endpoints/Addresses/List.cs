@@ -1,6 +1,9 @@
 using Carter;
+using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Mapster;
 using Mediator;
+using RentalControl.Services;
 using Supabase.Postgrest;
 
 namespace RentalControl.Endpoints.Addresses;
@@ -9,19 +12,20 @@ public class List : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/v1/address", (ISender sender) => sender.Send(new Query()));
+        app.MapGet("/api/v1/address", async (ISender sender) =>
+        {
+            var result = await sender.Send(new Query());
+            return result.ToOkHttpResult();
+        });
     }
 
-    public record Query : IRequest<Models.Get.Address[]>;
+    public record Query : IRequest<Result<Models.Get.Address[]>>;
     
-    public class Handler(Client client) : IRequestHandler<Query, Models.Get.Address[]>
+    public class Handler(AddressService addressService) : IRequestHandler<Query, Result<Models.Get.Address[]>>
     {
-        public async ValueTask<Models.Get.Address[]> Handle(Query query, CancellationToken cancellationToken)
+        public async ValueTask<Result<Models.Get.Address[]>> Handle(Query query, CancellationToken cancellationToken)
         {
-            var contracts = await client
-                .Table<Entities.Address>()
-                .Get(cancellationToken);
-            return contracts.Models.Adapt<Models.Get.Address[]>();
+            return await addressService.GetAddresses(cancellationToken);
         }
     }
 }

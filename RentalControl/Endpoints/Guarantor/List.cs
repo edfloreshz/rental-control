@@ -1,6 +1,9 @@
 ﻿using Carter;
+using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Mapster;
 using Mediator;
+using RentalControl.Services;
 using Supabase.Postgrest;
 
 namespace RentalControl.Endpoints.Guarantor;
@@ -9,19 +12,20 @@ public class List : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/v1/guarantor", (ISender sender) => sender.Send(new Query()));
+        app.MapGet("/api/v1/guarantor", async (ISender sender) =>
+        {
+            var result = await sender.Send(new Query());
+            return result.ToOkHttpResult();
+        });
     }
 
-    public record Query : IRequest<Models.Get.Guarantor[]>;
+    public record Query : IRequest<Result<Models.Get.Guarantor[]>>;
     
-    public class Handler(Client client) : IRequestHandler<Query, Models.Get.Guarantor[]>
+    public class Handler(GuarantorService guarantorService) : IRequestHandler<Query, Result<Models.Get.Guarantor[]>>
     {
-        public async ValueTask<Models.Get.Guarantor[]> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<Result<Models.Get.Guarantor[]>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var contracts = await client
-                .Table<Entities.Guarantor>()
-                .Get(cancellationToken);
-            return contracts.Models.Adapt<Models.Get.Guarantor[]>();
+            return await guarantorService.GetGuarantors(cancellationToken);
         }
     }
 }

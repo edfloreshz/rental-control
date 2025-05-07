@@ -5,6 +5,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using RentalControl.Components;
+using RentalControl.Services;
 using Scalar.AspNetCore;
 using Supabase.Postgrest;
 
@@ -21,6 +22,10 @@ builder.Services.AddCarter();
 builder.Services.AddMudServices();
 
 builder.Services.AddSingleton(new Client(builder.Configuration["Postgrest:Url"]!));
+builder.Services.AddSingleton<TenantService>();
+builder.Services.AddSingleton<ContractService>();
+builder.Services.AddSingleton<GuarantorService>();
+builder.Services.AddSingleton<AddressService>();
 
 var app = builder.Build();
 
