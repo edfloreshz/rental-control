@@ -1,4 +1,4 @@
-namespace RentalControl.Models.Update;
+namespace RentalControl.Models.Create;
 
 public class Tenant
 {

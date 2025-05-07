@@ -13,14 +13,15 @@ public class List : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet("/api/v1/contract", async (ISender sender) =>
-        {
-            var result = await sender.Send(new Query());
-            return result.ToOkHttpResult();
-        });
+            {
+                var result = await sender.Send(new Query());
+                return result.ToOkHttpResult();
+            })
+            .WithTags("Contracts");
     }
 
     public record Query : IRequest<Result<Models.Get.Contract[]>>;
-    
+
     public class Handler(ContractService contractService) : IRequestHandler<Query, Result<Models.Get.Contract[]>>
     {
         public async ValueTask<Result<Models.Get.Contract[]>> Handle(Query request, CancellationToken cancellationToken)

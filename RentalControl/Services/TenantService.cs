@@ -39,7 +39,7 @@ public class TenantService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Tenant>> CreateTenant(Models.Update.Tenant tenant, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Tenant>> CreateTenant(Models.Create.Tenant tenant, CancellationToken cancellationToken)
     {
         try
         {

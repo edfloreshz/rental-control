@@ -39,7 +39,7 @@ public class ContractService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Contract>> CreateContract(Models.Update.Contract contract,
+    public async ValueTask<Result<Models.Get.Contract>> CreateContract(Models.Create.Contract contract,
         CancellationToken cancellationToken)
     {
         try

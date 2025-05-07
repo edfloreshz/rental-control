@@ -16,7 +16,8 @@ public class List : ICarterModule
         {
             var result = await sender.Send(new Query());
             return result.ToOkHttpResult();
-        });
+        })
+        .WithTags("Guarantors");
     }
 
     public record Query : IRequest<Result<Models.Get.Guarantor[]>>;

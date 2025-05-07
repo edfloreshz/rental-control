@@ -39,7 +39,7 @@ public class AddressService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Address>> CreateAddress(Models.Update.Address contract,
+    public async ValueTask<Result<Models.Get.Address>> CreateAddress(Models.Create.Address contract,
         CancellationToken cancellationToken)
     {
         try

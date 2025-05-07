@@ -1,20 +1,17 @@
-using Carter;
+﻿using Carter;
 using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Mapster;
 using Mediator;
-using Microsoft.AspNetCore.Http.HttpResults;
 using RentalControl.Services;
-using Supabase.Postgrest;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace RentalControl.Endpoints.Tenant;
 
-public class Add : ICarterModule
+public class Update : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/v1/tenant", async ([AsParameters] Command command, ISender sender) =>
+        app.MapPut("/api/v1/tenant", async ([AsParameters] Command command, ISender sender) =>
             {
                 var result = await sender.Send(command);
                 return result.ToCreatedHttpResult();
@@ -22,14 +19,14 @@ public class Add : ICarterModule
             .WithTags("Tenants");
     }
 
-    public record Command(Models.Create.Tenant Tenant) : IRequest<Result<Models.Get.Tenant>>;
+    public record Command(Guid Id, Models.Update.Tenant Tenant) : IRequest<Result<Models.Get.Tenant>>;
 
     public class Handler(TenantService service) : IRequestHandler<Command, Result<Models.Get.Tenant>>
     {
         public async ValueTask<Result<Models.Get.Tenant>> Handle(Command command, CancellationToken cancellationToken)
         {
-            var tenant = command.Tenant.Adapt<Models.Create.Tenant>();
-            return await service.CreateTenant(tenant, cancellationToken: cancellationToken);
+            var tenant = command.Tenant.Adapt<Models.Update.Tenant>();
+            return await service.UpdateTenant(command.Id, tenant, cancellationToken: cancellationToken);
         }
     }
 }

@@ -14,19 +14,21 @@ public class Add : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/api/v1/guarantor", async (ISender sender, Command command) =>
-        {
-            var result = await sender.Send(command);
-            return result.ToCreatedHttpResult();
-        });
+            {
+                var result = await sender.Send(command);
+                return result.ToCreatedHttpResult();
+            })
+            .WithTags("Guarantors");
     }
 
-    public record Command(Guid AddressId, string Name, string Email, string Phone) : IRequest<Result<Models.Get.Guarantor>>;
+    public record Command(Models.Create.Guarantor Guarantor) : IRequest<Result<Models.Get.Guarantor>>;
 
     public class Handler(GuarantorService guarantorService) : IRequestHandler<Command, Result<Models.Get.Guarantor>>
     {
-        public async ValueTask<Result<Models.Get.Guarantor>> Handle(Command command, CancellationToken cancellationToken)
+        public async ValueTask<Result<Models.Get.Guarantor>> Handle(Command command,
+            CancellationToken cancellationToken)
         {
-            var guarantor = command.Adapt<Models.Update.Guarantor>();
+            var guarantor = command.Guarantor.Adapt<Models.Create.Guarantor>();
             return await guarantorService.CreateGuarantor(guarantor, cancellationToken);
         }
     }

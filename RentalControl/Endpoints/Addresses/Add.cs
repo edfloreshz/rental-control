@@ -14,27 +14,21 @@ public class Add : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/api/v1/address",
-            async (ISender sender, Command command) =>
-            {
-                var result = await sender.Send(command);
-                return result.ToCreatedHttpResult();
-            });
+                async (ISender sender, Command command) =>
+                {
+                    var result = await sender.Send(command);
+                    return result.ToCreatedHttpResult();
+                })
+            .WithTags("Addresses");
     }
 
-    public record Command(
-        string Street,
-        string Number,
-        string Neighborhood,
-        string City,
-        string State,
-        string ZipCode,
-        string Country) : IRequest<Result<Models.Get.Address>>;
+    public record Command(Models.Create.Address Address) : IRequest<Result<Models.Get.Address>>;
 
     public class Handler(AddressService addressService) : IRequestHandler<Command, Result<Models.Get.Address>>
     {
         public async ValueTask<Result<Models.Get.Address>> Handle(Command command, CancellationToken cancellationToken)
         {
-            var address = command.Adapt<Models.Update.Address>();
+            var address = command.Address.Adapt<Models.Create.Address>();
             return await addressService.CreateAddress(address, cancellationToken);
         }
     }

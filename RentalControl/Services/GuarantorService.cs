@@ -39,7 +39,7 @@ public class GuarantorService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Guarantor>> CreateGuarantor(Models.Update.Guarantor contract, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Guarantor>> CreateGuarantor(Models.Create.Guarantor contract, CancellationToken cancellationToken)
     {
         try
         {
