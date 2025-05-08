@@ -14,11 +14,9 @@ public class Add : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/v1/tenant", async ([AsParameters] Command command, ISender sender) =>
-            {
-                var result = await sender.Send(command);
-                return result.ToCreatedHttpResult();
-            })
+        app.MapPost("/api/v1/tenant",
+                async ([AsParameters] Command command, ISender sender) =>
+                (await sender.Send(command)).ToCreatedHttpResult())
             .WithTags("Tenants");
     }
 
@@ -29,7 +27,7 @@ public class Add : ICarterModule
         public async ValueTask<Result<Models.Get.Tenant>> Handle(Command command, CancellationToken cancellationToken)
         {
             var tenant = command.Tenant.Adapt<Models.Create.Tenant>();
-            return await service.CreateTenant(tenant, cancellationToken: cancellationToken);
+            return await service.Create(tenant, cancellationToken: cancellationToken);
         }
     }
 }

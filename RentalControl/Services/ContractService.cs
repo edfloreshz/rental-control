@@ -1,27 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using Mapster;
+using RentalControl.Interfaces;
 using Supabase.Postgrest;
 
 namespace RentalControl.Services;
 
 public class ContractService(Client client)
+    : ICrudService<Models.Get.Contract, Models.Create.Contract, Models.Update.Contract>
 {
-    public async ValueTask<Result<Models.Get.Contract[]>> GetContracts(CancellationToken cancellationToken)
-    {
-        try
-        {
-            var contracts = await client
-                .Table<Entities.Contract>()
-                .Get(cancellationToken);
-            return contracts.Models.Adapt<Models.Get.Contract[]>();
-        }
-        catch (Exception e)
-        {
-            return Result.Failure<Models.Get.Contract[]>(e.Message);
-        }
-    }
-
-    public async ValueTask<Result<Models.Get.Contract>> GetContract(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Contract>> Get(Guid id, CancellationToken cancellationToken)
     {
         try
         {
@@ -39,14 +26,29 @@ public class ContractService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Contract>> CreateContract(Models.Create.Contract contract,
+    public async ValueTask<Result<Models.Get.Contract[]>> GetAll(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var contracts = await client
+                .Table<Entities.Contract>()
+                .Get(cancellationToken);
+            return contracts.Models.Adapt<Models.Get.Contract[]>();
+        }
+        catch (Exception e)
+        {
+            return Result.Failure<Models.Get.Contract[]>(e.Message);
+        }
+    }
+
+    public async ValueTask<Result<Models.Get.Contract>> Create(Models.Create.Contract data,
         CancellationToken cancellationToken)
     {
         try
         {
             var newContract = await client
                 .Table<Entities.Contract>()
-                .Insert(contract.Adapt<Entities.Contract>(), cancellationToken: cancellationToken);
+                .Insert(data.Adapt<Entities.Contract>(), cancellationToken: cancellationToken);
             return newContract.Model is null
                 ? Result.Failure<Models.Get.Contract>("Failed to create contract")
                 : newContract.Model.Adapt<Models.Get.Contract>();
@@ -57,15 +59,15 @@ public class ContractService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Contract>> UpdateContract(Guid id, Models.Update.Contract contract,
+    public async ValueTask<Result<Models.Get.Contract>> Update(Models.Update.Contract data,
         CancellationToken cancellationToken)
     {
         try
         {
             var updatedContract = await client
                 .Table<Entities.Contract>()
-                .Where(x => x.Id == id)
-                .Update(contract.Adapt<Entities.Contract>(), cancellationToken: cancellationToken);
+                .Where(x => x.Id == data.Id)
+                .Update(data.Adapt<Entities.Contract>(), cancellationToken: cancellationToken);
             return updatedContract.Model is null
                 ? Result.Failure<Models.Get.Contract>("Failed to update contract")
                 : updatedContract.Model.Adapt<Models.Get.Contract>();
@@ -76,7 +78,7 @@ public class ContractService(Client client)
         }
     }
 
-    public async ValueTask<Result> DeleteContract(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result> Delete(Guid id, CancellationToken cancellationToken)
     {
         try
         {

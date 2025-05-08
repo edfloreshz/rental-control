@@ -10,11 +10,8 @@ public class Delete : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/api/v1/contract/{id}", async ([AsParameters] Command command, ISender sender) =>
-            {
-                var result = await sender.Send(command);
-                return result.ToNoContentHttpResult();
-            })
+        app.MapDelete("/api/v1/contract/{id:guid}",
+                async (Guid id, ISender sender) => (await sender.Send(new Command(id))).ToNoContentHttpResult())
             .WithTags("Contracts");
     }
 
@@ -24,7 +21,7 @@ public class Delete : ICarterModule
     {
         public async ValueTask<Result> Handle(Command command, CancellationToken cancellationToken)
         {
-            return await service.DeleteContract(command.Id, cancellationToken: cancellationToken);
+            return await service.Delete(command.Id, cancellationToken: cancellationToken);
         }
     }
 }

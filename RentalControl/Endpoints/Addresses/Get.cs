@@ -10,11 +10,8 @@ public class Get : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/v1/address/{id}", async ([AsParameters] Command command, ISender sender) =>
-            {
-                var result = await sender.Send(command);
-                return result.ToOkHttpResult();
-            })
+        app.MapGet("/api/v1/address/{id:guid}",
+                async (Guid id, ISender sender) => (await sender.Send(new Command(id))).ToOkHttpResult())
             .WithTags("Addresses");
     }
 
@@ -24,7 +21,7 @@ public class Get : ICarterModule
     {
         public async ValueTask<Result<Models.Get.Address>> Handle(Command command, CancellationToken cancellationToken)
         {
-            return await service.GetAddress(command.Id, cancellationToken: cancellationToken);
+            return await service.Get(command.Id, cancellationToken: cancellationToken);
         }
     }
 }

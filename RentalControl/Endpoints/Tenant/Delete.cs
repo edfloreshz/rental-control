@@ -10,21 +10,18 @@ public class Delete : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/api/v1/tenant/{id}", async ([AsParameters] Query query, ISender sender) =>
-            {
-                var result = await sender.Send(query);
-                return result.ToNoContentHttpResult();
-            })
+        app.MapDelete("/api/v1/tenant/{id:guid}",
+                async (Guid id, ISender sender) => (await sender.Send(new Command(id))).ToNoContentHttpResult())
             .WithTags("Tenants");
     }
-    
-    public record Query(Guid Id) : IRequest<Result>;
-    
-    public class Handler(TenantService service) : IRequestHandler<Query, Result>
+
+    public record Command(Guid Id) : IRequest<Result>;
+
+    public class Handler(TenantService service) : IRequestHandler<Command, Result>
     {
-        public async ValueTask<Result> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<Result> Handle(Command request, CancellationToken cancellationToken)
         {
-            return await service.DeleteTenant(request.Id, cancellationToken);
+            return await service.Delete(request.Id, cancellationToken);
         }
     }
 }

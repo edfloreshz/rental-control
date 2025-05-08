@@ -1,12 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using Mapster;
+using RentalControl.Interfaces;
 using Supabase.Postgrest;
 
 namespace RentalControl.Services;
 
 public class AddressService(Client client)
+    : ICrudService<Models.Get.Address, Models.Create.Address, Models.Update.Address>
 {
-    public async ValueTask<Result<Models.Get.Address[]>> GetAddresses(CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Address[]>> GetAll(CancellationToken cancellationToken)
     {
         try
         {
@@ -21,7 +23,7 @@ public class AddressService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Address>> GetAddress(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Address>> Get(Guid id, CancellationToken cancellationToken)
     {
         try
         {
@@ -39,14 +41,14 @@ public class AddressService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Address>> CreateAddress(Models.Create.Address contract,
+    public async ValueTask<Result<Models.Get.Address>> Create(Models.Create.Address data,
         CancellationToken cancellationToken)
     {
         try
         {
             var newAddress = await client
                 .Table<Entities.Address>()
-                .Insert(contract.Adapt<Entities.Address>(), cancellationToken: cancellationToken);
+                .Insert(data.Adapt<Entities.Address>(), cancellationToken: cancellationToken);
             return newAddress.Model is null
                 ? Result.Failure<Models.Get.Address>("Failed to create address")
                 : newAddress.Model.Adapt<Models.Get.Address>();
@@ -57,15 +59,15 @@ public class AddressService(Client client)
         }
     }
 
-    public async ValueTask<Result<Models.Get.Address>> UpdateAddress(Guid id, Models.Update.Address contract,
+    public async ValueTask<Result<Models.Get.Address>> Update(Models.Update.Address data,
         CancellationToken cancellationToken)
     {
         try
         {
             var updatedAddress = await client
                 .Table<Entities.Address>()
-                .Where(x => x.Id == id)
-                .Update(contract.Adapt<Entities.Address>(), cancellationToken: cancellationToken);
+                .Where(x => x.Id == data.Id)
+                .Update(data.Adapt<Entities.Address>(), cancellationToken: cancellationToken);
             return updatedAddress.Model is null
                 ? Result.Failure<Models.Get.Address>("Failed to update address")
                 : updatedAddress.Model.Adapt<Models.Get.Address>();
@@ -76,7 +78,7 @@ public class AddressService(Client client)
         }
     }
 
-    public async ValueTask<Result> DeleteAddress(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result> Delete(Guid id, CancellationToken cancellationToken)
     {
         try
         {

@@ -13,11 +13,9 @@ public class Add : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/v1/guarantor", async (ISender sender, Command command) =>
-            {
-                var result = await sender.Send(command);
-                return result.ToCreatedHttpResult();
-            })
+        app.MapPost("/api/v1/guarantor",
+                async ([AsParameters] Command command, ISender sender) =>
+                (await sender.Send(command)).ToCreatedHttpResult())
             .WithTags("Guarantors");
     }
 
@@ -29,7 +27,7 @@ public class Add : ICarterModule
             CancellationToken cancellationToken)
         {
             var guarantor = command.Guarantor.Adapt<Models.Create.Guarantor>();
-            return await guarantorService.CreateGuarantor(guarantor, cancellationToken);
+            return await guarantorService.Create(guarantor, cancellationToken);
         }
     }
 }

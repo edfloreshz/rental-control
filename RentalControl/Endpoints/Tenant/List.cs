@@ -13,11 +13,7 @@ public class List : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/v1/tenant", async (ISender sender) =>
-            {
-                var result = await sender.Send(new Query());
-                return result.ToOkHttpResult();
-            })
+        app.MapGet("/api/v1/tenant", async (ISender sender) => (await sender.Send(new Query())).ToOkHttpResult())
             .WithTags("Tenants");
     }
 
@@ -27,7 +23,7 @@ public class List : ICarterModule
     {
         public async ValueTask<Result<Models.Get.Tenant[]>> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await service.GetTenants(cancellationToken);
+            return await service.GetAll(cancellationToken);
         }
     }
 }

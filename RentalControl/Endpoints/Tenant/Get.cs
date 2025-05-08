@@ -10,21 +10,18 @@ public class Get : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/v1/tenant/{id}", async ([AsParameters] Query query, ISender sender) =>
-            {
-                var result = await sender.Send(query);
-                return result.ToOkHttpResult();
-            })
+        app.MapGet("/api/v1/tenant/{id:guid}",
+                async (Guid id, ISender sender) => (await sender.Send(new Command(id))).ToOkHttpResult())
             .WithTags("Tenants");
     }
 
-    public record Query(Guid Id) : IRequest<Result<Models.Get.Tenant>>;
+    public record Command(Guid Id) : IRequest<Result<Models.Get.Tenant>>;
 
-    public class Handler(TenantService service) : IRequestHandler<Query, Result<Models.Get.Tenant>>
+    public class Handler(TenantService service) : IRequestHandler<Command, Result<Models.Get.Tenant>>
     {
-        public async ValueTask<Result<Models.Get.Tenant>> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<Result<Models.Get.Tenant>> Handle(Command command, CancellationToken cancellationToken)
         {
-            return await service.GetTenant(request.Id, cancellationToken);
+            return await service.Get(command.Id, cancellationToken);
         }
     }
 }

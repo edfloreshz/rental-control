@@ -1,12 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using Mapster;
+using RentalControl.Interfaces;
 using Supabase.Postgrest;
 
 namespace RentalControl.Services;
 
-public class TenantService(Client client)
+public class TenantService(Client client) : ICrudService<Models.Get.Tenant, Models.Create.Tenant, Models.Update.Tenant>
 {
-    public async ValueTask<Result<Models.Get.Tenant[]>> GetTenants(CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Tenant[]>> GetAll(CancellationToken cancellationToken)
     {
         try
         {
@@ -21,7 +22,7 @@ public class TenantService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Tenant>> GetTenant(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Tenant>> Get(Guid id, CancellationToken cancellationToken)
     {
         try
         {
@@ -39,13 +40,13 @@ public class TenantService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Tenant>> CreateTenant(Models.Create.Tenant tenant, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Tenant>> Create(Models.Create.Tenant data, CancellationToken cancellationToken)
     {
         try
         {
             var newTenant = await client
                 .Table<Entities.Tenant>()
-                .Insert(tenant.Adapt<Entities.Tenant>(), cancellationToken: cancellationToken);
+                .Insert(data.Adapt<Entities.Tenant>(), cancellationToken: cancellationToken);
             return newTenant.Model is null
                 ? Result.Failure<Models.Get.Tenant>("Failed to create tenant")
                 : newTenant.Adapt<Models.Get.Tenant>();
@@ -56,14 +57,14 @@ public class TenantService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Tenant>> UpdateTenant(Guid id, Models.Update.Tenant tenant, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Tenant>> Update(Models.Update.Tenant data, CancellationToken cancellationToken)
     {
         try
         {
             var updatedTenant = await client
                 .Table<Entities.Tenant>()
-                .Where(x => x.Id == id)
-                .Update(tenant.Adapt<Entities.Tenant>(), cancellationToken: cancellationToken);
+                .Where(x => x.Id == data.Id)
+                .Update(data.Adapt<Entities.Tenant>(), cancellationToken: cancellationToken);
             return updatedTenant.Model is null
                 ? Result.Failure<Models.Get.Tenant>("Failed to update tenant")
                 : updatedTenant.Adapt<Models.Get.Tenant>();
@@ -74,7 +75,7 @@ public class TenantService(Client client)
         }
     }
     
-    public async ValueTask<Result> DeleteTenant(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result> Delete(Guid id, CancellationToken cancellationToken)
     {
         try
         {

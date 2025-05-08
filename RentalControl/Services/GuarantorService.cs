@@ -1,12 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using Mapster;
+using RentalControl.Interfaces;
 using Supabase.Postgrest;
 
 namespace RentalControl.Services;
 
-public class GuarantorService(Client client)
+public class GuarantorService(Client client) : ICrudService<Models.Get.Guarantor, Models.Create.Guarantor, Models.Update.Guarantor>
 {
-    public async ValueTask<Result<Models.Get.Guarantor[]>> GetGuarantors(CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Guarantor[]>> GetAll(CancellationToken cancellationToken)
     {
         try
         {
@@ -21,7 +22,7 @@ public class GuarantorService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Guarantor>> GetGuarantor(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Guarantor>> Get(Guid id, CancellationToken cancellationToken)
     {
         try
         {
@@ -39,13 +40,13 @@ public class GuarantorService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Guarantor>> CreateGuarantor(Models.Create.Guarantor contract, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Guarantor>> Create(Models.Create.Guarantor data, CancellationToken cancellationToken)
     {
         try
         {
             var newGuarantor = await client
                 .Table<Entities.Guarantor>()
-                .Insert(contract.Adapt<Entities.Guarantor>(), cancellationToken: cancellationToken);
+                .Insert(data.Adapt<Entities.Guarantor>(), cancellationToken: cancellationToken);
             return newGuarantor.Model is null
                 ? Result.Failure<Models.Get.Guarantor>("Failed to create guarantor")
                 : newGuarantor.Model.Adapt<Models.Get.Guarantor>();
@@ -56,14 +57,14 @@ public class GuarantorService(Client client)
         }
     }
     
-    public async ValueTask<Result<Models.Get.Guarantor>> UpdateGuarantor(Guid id, Models.Update.Guarantor contract, CancellationToken cancellationToken)
+    public async ValueTask<Result<Models.Get.Guarantor>> Update(Models.Update.Guarantor data, CancellationToken cancellationToken)
     {
         try
         {
             var updatedGuarantor = await client
                 .Table<Entities.Guarantor>()
-                .Where(x => x.Id == id)
-                .Update(contract.Adapt<Entities.Guarantor>(), cancellationToken: cancellationToken);
+                .Where(x => x.Id == data.Id)
+                .Update(data.Adapt<Entities.Guarantor>(), cancellationToken: cancellationToken);
             return updatedGuarantor.Model is null
                 ? Result.Failure<Models.Get.Guarantor>("Failed to update guarantor")
                 : updatedGuarantor.Model.Adapt<Models.Get.Guarantor>();
@@ -74,7 +75,7 @@ public class GuarantorService(Client client)
         }
     }
     
-    public async ValueTask<Result> DeleteGuarantor(Guid id, CancellationToken cancellationToken)
+    public async ValueTask<Result> Delete(Guid id, CancellationToken cancellationToken)
     {
         try
         {
