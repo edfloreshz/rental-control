@@ -1,3 +1,5 @@
+using RentalControl.Entities;
+
 namespace RentalControl.Components.Models;
 
 public class Contract
@@ -17,16 +19,4 @@ public class Contract
     public Tenant Tenant { get; set; } = new();
     public Address Address { get; set; } = new();
     public List<Guarantor> Guarantors { get; set; } = [];
-}
-
-public enum ContractStatus
-{
-    Active,
-    Expired,
-    Terminated
-}
-
-public enum ContractType
-{
-    Yearly
 }
