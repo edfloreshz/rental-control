@@ -1,0 +1,74 @@
+﻿@using RentalControl.Entities
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" GutterBottom="true">Agregar contrato</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="Form" @bind-IsValid="@Success" @bind-Errors="@Errors">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="Model.Business" InputType="InputType.Text" Variant="Variant.Outlined" Label="Negocio" Required="true" RequiredError="Negocio es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack Row="true">
+                        <MudSelect @bind-Value="Model.TenantId" Placeholder="Seleccione de la lista" Variant="Variant.Outlined" Label="Arrendatario">
+                            @foreach (var tenant in Tenants)
+                            {
+                                <MudSelectItem Value="tenant.Id.ToString()">@tenant.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudButton Variant="Variant.Text" OnClick="OpenAddTenantDialog">
+                            <MudIcon Icon="@Icons.Material.Filled.Add"/>
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack Row="true">
+                        <MudSelect @bind-Value="Model.AddressId" Placeholder="Seleccione de la lista" Variant="Variant.Outlined" Label="Dirección">
+                            @foreach (var address in Addresses)
+                            {
+                                <MudSelectItem Value="address.Id.ToString()">@address.ShortAddress</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudButton Variant="Variant.Text" OnClick="OpenAddAddressDialog">
+                            <MudIcon Icon="@Icons.Material.Filled.Add"/>
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudNumericField @bind-Value="Model.Rent" Label="Renta" Variant="Variant.Outlined" Min="0" Max="decimal.MaxValue"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudNumericField @bind-Value="Model.Deposit" Label="Deposito" Variant="Variant.Outlined" Min="0" Max="decimal.MaxValue"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Label="Fecha de inicio" @bind-Date="Model.StartDate" Variant="Variant.Outlined"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Label="Fecha de termino" @bind-Date="Model.EndDate" Variant="Variant.Outlined"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect @bind-Value="Model.Status" Placeholder="Seleccione de la lista" Variant="Variant.Outlined" Label="Estado">
+                        @foreach (var status in Enum.GetValues(typeof(ContractStatus)).Cast<ContractStatus>())
+                        {
+                            <MudSelectItem Value="status">@status.ToString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect @bind-Value="Model.Type" Placeholder="Seleccione de la lista" Variant="Variant.Outlined" Label="Tipo">
+                        @foreach (var type in Enum.GetValues(typeof(ContractType)).Cast<ContractType>())
+                        {
+                            <MudSelectItem Value="type">@type.ToString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>

@@ -12,7 +12,7 @@ else
         <ToolBarContent>
             <MudText>Contratos</MudText>
             <MudSpacer/>
-            <MudButton OnClick="@AddItem" Variant="Variant.Filled">Agregar</MudButton>
+            <MudButton OnClick="@OpenAddDialog" Variant="Variant.Filled">Agregar</MudButton>
         </ToolBarContent>
         <Columns>
             <PropertyColumn Property="x => x.Tenant.Name" Title="Nombre"/>

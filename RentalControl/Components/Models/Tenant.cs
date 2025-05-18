@@ -2,11 +2,11 @@ namespace RentalControl.Components.Models;
 
 public class Tenant
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
-    public Guid AddressId { get; set; }
+    public string AddressId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool Selected { get; set; }
     

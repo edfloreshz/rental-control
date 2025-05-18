@@ -3,11 +3,12 @@ using CSharpFunctionalExtensions;
 using Mapster;
 using Mediator;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using RentalControl.Components.Models;
 
 namespace RentalControl.Components.Pages;
 
-public partial class Tenants(ISender sender) : ComponentBase
+public partial class Tenants(ISender sender, IDialogService dialogService) : ComponentBase
 {
     private ObservableCollection<Tenant>? Items { get; set; }
 
@@ -15,6 +16,12 @@ public partial class Tenants(ISender sender) : ComponentBase
     {
         var result = await sender.Send(new Endpoints.Tenant.List.Query());
         result.Match(SetItems, Console.WriteLine);
+    }
+    
+    private Task<IDialogReference> OpenAddDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        return dialogService.ShowAsync<Dialogs.Tenant.Add>("Add Tenant", options);
     }
     
     private void SetItems(RentalControl.Models.Get.Tenant[] items)

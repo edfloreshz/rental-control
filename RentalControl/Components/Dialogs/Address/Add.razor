@@ -1,0 +1,43 @@
+﻿@using RentalControl.Entities
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" GutterBottom="true">Agregar dirección</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="Form" @bind-IsValid="@Success" @bind-Errors="@Errors">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.Street" Variant="Variant.Outlined" Label="Street" Required="true" RequiredError="Street es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.Neighborhood" Variant="Variant.Outlined" Label="Neighborhood" Required="true" RequiredError="Neighborhood es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.ZipCode" Variant="Variant.Outlined" Label="ZipCode" Required="true" RequiredError="ZipCode es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.City" Variant="Variant.Outlined" Label="City" Required="true" RequiredError="City es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.State" Variant="Variant.Outlined" Label="State" Required="true" RequiredError="State es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Model.Country" Variant="Variant.Outlined" Label="Country" Required="true" RequiredError="Country es un campo requerido"/>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+        @if (Errors.Length > 0)
+        {
+            <MudAlert Severity="Severity.Error" Icon="@Icons.Material.Filled.Error">
+                @foreach (var error in Errors)
+                {
+                    <div>@error</div>
+                }
+            </MudAlert>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>

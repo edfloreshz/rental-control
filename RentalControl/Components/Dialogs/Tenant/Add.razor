@@ -1,0 +1,38 @@
+﻿@using RentalControl.Entities
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" GutterBottom="true">Agregar arrendatario</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="Form" @bind-IsValid="@Success" @bind-Errors="@Errors">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="Model.Name" Variant="Variant.Outlined" Label="Name" Required="true" RequiredError="Name es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.Email" Variant="Variant.Outlined" Label="Email" Required="true" RequiredError="Email es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.Phone" Variant="Variant.Outlined" Label="Phone" Required="true" RequiredError="Phone es un campo requerido"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack Row="true">
+                        <MudSelect @bind-Value="Model.AddressId" Placeholder="Seleccione de la lista" Variant="Variant.Outlined" Label="Dirección">
+                            @foreach (var address in Addresses)
+                            {
+                                <MudSelectItem Value="address.Id.ToString()">@address.ShortAddress</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudButton Variant="Variant.Text" OnClick="OpenAddAddressDialog">
+                            <MudIcon Icon="@Icons.Material.Filled.Add"/>
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
