@@ -1,7 +1,10 @@
 ﻿services:
   rentalcontrol:
     image: rentalcontrol
+    ports:
+      - "8080:8080"
     build:
       context: .
       dockerfile: RentalControl/Dockerfile
+      
 

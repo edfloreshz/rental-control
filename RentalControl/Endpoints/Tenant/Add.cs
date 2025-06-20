@@ -3,10 +3,7 @@ using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Mapster;
 using Mediator;
-using Microsoft.AspNetCore.Http.HttpResults;
 using RentalControl.Services;
-using Supabase.Postgrest;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace RentalControl.Endpoints.Tenant;
 

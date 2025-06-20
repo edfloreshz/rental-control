@@ -39,4 +39,10 @@ public partial class Contracts(ISender sender, IDialogService dialogService) : C
         if (item is null) return;
         Items?.Remove(item);
     }
+    
+    private async Task GeneratePdf(Guid id)
+    {
+        var result = await sender.Send(new Endpoints.Contract.List.Query());
+        result.Match(SetItems, Console.WriteLine);
+    }
 }

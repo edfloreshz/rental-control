@@ -30,6 +30,11 @@ else
                         <MudIcon Icon="@Icons.Material.Filled.Delete"/>
                     </MudButton>
                 </CellTemplate>
+                <CellTemplate>
+                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Error" OnClick="@(() => GeneratePdf(context.Item.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete"/>
+                    </MudButton>
+                </CellTemplate>
             </TemplateColumn>
         </Columns>
     </MudDataGrid>

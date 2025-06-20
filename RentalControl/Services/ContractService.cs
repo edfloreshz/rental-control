@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Mapster;
+using QuestPDF.Fluent;
 using RentalControl.Interfaces;
 using Supabase.Postgrest;
 
@@ -8,6 +9,11 @@ namespace RentalControl.Services;
 public class ContractService(Client client)
     : ICrudService<Models.Get.Contract, Models.Create.Contract, Models.Update.Contract>
 {
+    public async ValueTask<Result<Document>> GeneratePdf(Guid id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException("PDF generation is not implemented yet.");
+    }
+    
     public async ValueTask<Result<Models.Get.Contract>> Get(Guid id, CancellationToken cancellationToken)
     {
         try

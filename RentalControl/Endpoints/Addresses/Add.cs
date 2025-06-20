@@ -1,11 +1,9 @@
-﻿using Carter;
+using Carter;
 using CSharpFunctionalExtensions;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Mapster;
 using Mediator;
-using Microsoft.AspNetCore.Http.HttpResults;
 using RentalControl.Services;
-using Supabase.Postgrest;
 
 namespace RentalControl.Endpoints.Addresses;
 
