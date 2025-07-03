@@ -1,8 +1,6 @@
-CREATE DATABASE "RentalControl";
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-GRANT ALL PRIVILEGES ON DATABASE "RentalControl" TO eduardo;
+GRANT ALL PRIVILEGES ON DATABASE "RentalControl" TO rentalcontrol;
 
 -- Create an event trigger function
 CREATE
