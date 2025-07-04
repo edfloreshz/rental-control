@@ -1,23 +1,31 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
+# Build stage
+FROM golang:1.21-alpine AS builder
+
 WORKDIR /app
+
+# Copy go mod files
+COPY api/go.mod api/go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY api/ .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+# Final stage
+FROM alpine:latest
+
+# Install ca-certificates for HTTPS requests
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the binary from builder stage
+COPY --from=builder /app/main .
+
+# Expose port
 EXPOSE 8080
-EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["api/RentalControl.csproj", "RentalControl/"]
-RUN dotnet restore "RentalControl/RentalControl.csproj"
-COPY . .
-WORKDIR "/src/RentalControl"
-RUN dotnet build "./RentalControl.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./RentalControl.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "RentalControl.dll"]
+# Run the binary
+CMD ["./main"]

@@ -8,40 +8,40 @@ services:
     environment:
       POSTGRES_USER: rentalcontrol
       POSTGRES_PASSWORD: rentalcontrol
-      POSTGRES_DB: RentalControl
+      POSTGRES_DB: rentalcontrol
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  postgrest:
-    image: postgrest/postgrest
-    container_name: rent-control-postgrest
-    environment:
-      PGRST_DB_URI: postgres://rentalcontrol:rentalcontrol@db/RentalControl
-      PGRST_DB_ANON_ROLE: rentalcontrol
-      PGRST_DB_SCHEMA: public
-      PGRST_SERVER_PORT: 3000
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-
-  rentalcontrol:
+  api:
     container_name: rental-control-api
-    ports:
-      - "8080:8080"
     build:
       context: .
       dockerfile: api/Dockerfile
-
-  web:
-    container_name: rental-control-web
     ports:
-      - "3001:80"
-    build:
-      context: .
-      dockerfile: web/Dockerfile
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgres://rentalcontrol:rentalcontrol@db/rentalcontrol?sslmode=disable
+      - PORT=8080
+      - ENVIRONMENT=production
+      - GIN_MODE=release
     depends_on:
-      - rentalcontrol
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # web:
+  #   container_name: rental-control-web
+  #   ports:
+  #     - "3001:80"
+  #   build:
+  #     context: .
+  #     dockerfile: web/Dockerfile
+  #   depends_on:
+  #     - api

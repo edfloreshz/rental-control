@@ -53,3 +53,25 @@ export function downloadFile(blob: Blob, filename: string): void {
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
 }
+
+// Case conversion utilities
+export function camelToSnakeCase(str: string): string {
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
+
+export function objectToSnakeCase(obj: any): any {
+    if (obj === null || typeof obj !== "object") {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(objectToSnakeCase);
+    }
+
+    const snakeCaseObj: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+        const snakeKey = camelToSnakeCase(key);
+        snakeCaseObj[snakeKey] = objectToSnakeCase(value);
+    }
+    return snakeCaseObj;
+}
