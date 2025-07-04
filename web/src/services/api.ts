@@ -12,16 +12,98 @@ import type {
     UpdateGuarantor,
     UpdateTenant,
 } from "../types";
-import { objectToSnakeCase } from "../utils";
+import { objectToCamelCase, objectToSnakeCase } from "../utils";
 
-// Use relative URL to leverage Vite's proxy configuration
+// Helper function to convert date fields to RFC3339 format
+function formatDateForAPI(obj: any): any {
+    if (!obj || typeof obj !== "object") return obj;
+
+    const result = Array.isArray(obj) ? [...obj] : { ...obj };
+
+    for (const key in result) {
+        if (result[key] && typeof result[key] === "object") {
+            result[key] = formatDateForAPI(result[key]);
+        } else if (typeof result[key] === "string") {
+            // Check if it's a date field (startDate, endDate, etc.) and looks like YYYY-MM-DD
+            if (
+                (key === "startDate" || key === "endDate" ||
+                    key === "start_date" || key === "end_date") &&
+                /^\d{4}-\d{2}-\d{2}$/.test(result[key])
+            ) {
+                // Convert YYYY-MM-DD to YYYY-MM-DDTHH:mm:ssZ (RFC3339)
+                result[key] = result[key] + "T00:00:00Z";
+            }
+        }
+    }
+
+    return result;
+}
+
+// Helper function to convert string numeric fields to numbers
+function convertNumericFields(obj: any): any {
+    if (!obj || typeof obj !== "object") return obj;
+
+    const result = Array.isArray(obj) ? [...obj] : { ...obj };
+
+    for (const key in result) {
+        if (result[key] && typeof result[key] === "object") {
+            result[key] = convertNumericFields(result[key]);
+        } else if (typeof result[key] === "string") {
+            // Check if it's a numeric field and convert to number
+            if (
+                (key === "deposit" || key === "rent" || key === "amount" ||
+                    key === "price" || key === "cost") &&
+                /^\d+(\.\d+)?$/.test(result[key])
+            ) {
+                result[key] = parseFloat(result[key]);
+            }
+        }
+    }
+
+    return result;
+}
+
+// Helper function to convert RFC3339 date fields back to simple date strings
+function formatDateFromAPI(obj: any): any {
+    if (!obj || typeof obj !== "object") return obj;
+
+    const result = Array.isArray(obj) ? [...obj] : { ...obj };
+
+    for (const key in result) {
+        if (result[key] && typeof result[key] === "object") {
+            result[key] = formatDateFromAPI(result[key]);
+        } else if (typeof result[key] === "string") {
+            // Check if it's a date field and looks like RFC3339 (YYYY-MM-DDTHH:mm:ssZ)
+            if (
+                (key === "startDate" || key === "endDate" ||
+                    key === "start_date" || key === "end_date") &&
+                /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(.?\d{3})?Z?$/.test(
+                    result[key],
+                )
+            ) {
+                // Convert to YYYY-MM-DD
+                result[key] = result[key].split("T")[0];
+            }
+        }
+    }
+
+    return result;
+}
 
 class ApiService {
+    private baseUrl: string;
+
+    constructor() {
+        // Use environment variable for API base URL, fallback to relative URL for development
+        this.baseUrl = import.meta.env.VITE_API_BASE_URL || "";
+    }
+
     private async request<T>(
         endpoint: string,
         options: RequestInit = {},
     ): Promise<T> {
-        console.log("Making API request to:", endpoint);
+        const fullUrl = `${this.baseUrl}${endpoint}`;
+        console.log("Making API request to:", fullUrl);
 
         // Only set Content-Type for requests with a body
         const headers: Record<string, string> = {};
@@ -34,7 +116,12 @@ class ApiService {
         if (body && typeof body === "string") {
             try {
                 const parsed = JSON.parse(body);
-                const snakeCaseData = objectToSnakeCase(parsed);
+                // First format dates, then convert numeric fields, then convert to snake_case
+                const dateFormattedData = formatDateForAPI(parsed);
+                const numericConvertedData = convertNumericFields(
+                    dateFormattedData,
+                );
+                const snakeCaseData = objectToSnakeCase(numericConvertedData);
                 body = JSON.stringify(snakeCaseData);
             } catch (error) {
                 // If parsing fails, use the original body
@@ -45,7 +132,7 @@ class ApiService {
             }
         }
 
-        const response = await fetch(endpoint, {
+        const response = await fetch(fullUrl, {
             headers: {
                 ...headers,
                 ...options.headers,
@@ -64,9 +151,38 @@ class ApiService {
             );
         }
 
-        const data = await response.json();
-        console.log("API response data:", data);
-        return data ?? [] as T;
+        // Check if response has content before trying to parse JSON
+        const contentType = response.headers.get("content-type");
+        const contentLength = response.headers.get("content-length");
+
+        // If no content or content-length is 0, return empty for void responses
+        if (
+            !contentType?.includes("application/json") ||
+            contentLength === "0" || response.status === 204
+        ) {
+            return undefined as T;
+        }
+
+        // Try to parse JSON only if we expect content
+        const text = await response.text();
+        if (!text) {
+            return undefined as T;
+        }
+
+        try {
+            const data = JSON.parse(text);
+            console.log("API response data (before conversion):", data);
+            const camelCaseData = objectToCamelCase(data);
+            const dateFormattedData = formatDateFromAPI(camelCaseData);
+            console.log(
+                "API response data (after conversion):",
+                dateFormattedData,
+            );
+            return dateFormattedData ?? [] as T;
+        } catch (error) {
+            console.warn("Failed to parse JSON response:", error);
+            return undefined as T;
+        }
     }
 
     // Address endpoints
@@ -186,7 +302,7 @@ class ApiService {
     };
 
     generateContractPdf = (id: string): Promise<Blob> => {
-        return fetch(`/api/v1/contracts/${id}/pdf`)
+        return fetch(`${this.baseUrl}/api/v1/contracts/${id}/pdf`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

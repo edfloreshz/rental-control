@@ -12,7 +12,7 @@ type Config struct {
 
 func New() *Config {
 	return &Config{
-		DatabaseURL: getEnv("DATABASE_URL", "postgres://rentalcontrol:password@localhost/rental_control?sslmode=disable"),
+		DatabaseURL: getEnv("DATABASE_URL", "postgres://rentalcontrol:rentalcontrol@db/rentalcontrol?sslmode=disable"),
 		Port:        getEnv("PORT", "8080"),
 		Environment: getEnv("ENVIRONMENT", "development"),
 	}

@@ -37,12 +37,13 @@ func main() {
 	// Initialize Chi router
 	r := chi.NewRouter()
 
-	// CORS middleware
+	// CORS middleware - must be first to handle preflight requests
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedOrigins:   []string{"*"}, // Allow all origins for now
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Origin", "Content-Type", "Authorization"},
-		AllowCredentials: true,
+		AllowedHeaders:   []string{"Origin", "Content-Type", "Authorization", "Accept", "X-Requested-With"},
+		AllowCredentials: false, // Set to false when using wildcard origin
+		MaxAge:           300,   // Cache preflight response for 5 minutes
 	}))
 
 	// Chi built-in middleware
@@ -50,6 +51,15 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.StripSlashes) // Add this to handle trailing slashes
+
+	// Debug middleware to log requests
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("Request: %s %s", r.Method, r.URL.Path)
+			next.ServeHTTP(w, r)
+		})
+	})
 
 	// Custom middleware
 	r.Use(customMiddleware.ErrorHandler())
@@ -67,6 +77,12 @@ func main() {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"status": "healthy"})
+	})
+
+	// Root endpoint
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"message": "Rent Control API", "version": "1.0"})
 	})
 
 	r.Get("/reference", func(w http.ResponseWriter, r *http.Request) {

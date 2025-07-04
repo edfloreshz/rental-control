@@ -59,6 +59,10 @@ export function camelToSnakeCase(str: string): string {
     return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
 
+export function snakeToCamelCase(str: string): string {
+    return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
 export function objectToSnakeCase(obj: any): any {
     if (obj === null || typeof obj !== "object") {
         return obj;
@@ -74,4 +78,21 @@ export function objectToSnakeCase(obj: any): any {
         snakeCaseObj[snakeKey] = objectToSnakeCase(value);
     }
     return snakeCaseObj;
+}
+
+export function objectToCamelCase(obj: any): any {
+    if (obj === null || typeof obj !== "object") {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(objectToCamelCase);
+    }
+
+    const camelCaseObj: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+        const camelKey = snakeToCamelCase(key);
+        camelCaseObj[camelKey] = objectToCamelCase(value);
+    }
+    return camelCaseObj;
 }

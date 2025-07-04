@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: rentalcontrol
       POSTGRES_DB: rentalcontrol
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -22,10 +22,10 @@ services:
   api:
     container_name: rental-control-api
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: ./api
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       - DATABASE_URL=postgres://rentalcontrol:rentalcontrol@db/rentalcontrol?sslmode=disable
       - PORT=8080
@@ -35,6 +35,12 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # web:
   #   container_name: rental-control-web
@@ -43,5 +49,7 @@ services:
   #   build:
   #     context: .
   #     dockerfile: web/Dockerfile
+  #     args:
+  #       - VITE_API_BASE_URL=http://localhost:8080
   #   depends_on:
   #     - api
