@@ -1,8 +1,10 @@
 import { useContracts, useTenants, useAddresses, useGuarantors } from '../hooks/api';
 import { ContractStatus } from '../types';
 import type { Contract } from '../types';
+import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
+    const { t } = useTranslation();
     const { data: contracts = [] } = useContracts();
     const { data: tenants = [] } = useTenants();
     const { data: addresses = [] } = useAddresses();
@@ -13,25 +15,25 @@ export default function Dashboard() {
 
     const stats = [
         {
-            name: 'Total Tenants',
+            name: t('dashboard.stats.totalTenants'),
             value: tenants.length,
             icon: '👥',
             color: 'bg-blue-500',
         },
         {
-            name: 'Active Contracts',
+            name: t('dashboard.stats.activeContracts'),
             value: activeContracts.length,
             icon: '📋',
             color: 'bg-green-500',
         },
         {
-            name: 'Total Properties',
+            name: t('dashboard.stats.totalProperties'),
             value: addresses.length,
             icon: '🏠',
             color: 'bg-purple-500',
         },
         {
-            name: 'Total Guarantors',
+            name: t('dashboard.stats.totalGuarantors'),
             value: guarantors.length,
             icon: '🤝',
             color: 'bg-orange-500',
@@ -42,8 +44,8 @@ export default function Dashboard() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600">Overview of your rental properties</p>
+                <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.title')}</h1>
+                <p className="text-gray-600">{t('dashboard.subtitle')}</p>
             </div>
 
             {/* Stats Grid */}
@@ -65,35 +67,35 @@ export default function Dashboard() {
 
             {/* Revenue Card */}
             <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Monthly Revenue</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('dashboard.monthlyRevenue')}</h3>
                 <div className="text-3xl font-bold text-green-600">
                     ${totalRent.toLocaleString()}
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
-                    From {activeContracts.length} active contracts
+                    {t('dashboard.fromContracts', { count: activeContracts.length })}
                 </p>
             </div>
 
             {/* Recent Contracts */}
             <div className="bg-white rounded-lg shadow">
                 <div className="px-6 py-4 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900">Recent Contracts</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.recentContracts')}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Tenant
+                                    {t('dashboard.tenant')}
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Property
+                                    {t('dashboard.property')}
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Rent
+                                    {t('dashboard.rent')}
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
+                                    {t('dashboard.status')}
                                 </th>
                             </tr>
                         </thead>
@@ -123,12 +125,12 @@ export default function Dashboard() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${contract.status === ContractStatus.Active
-                                                ? 'bg-green-100 text-green-800'
-                                                : contract.status === ContractStatus.Expired
-                                                    ? 'bg-red-100 text-red-800'
-                                                    : 'bg-gray-100 text-gray-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : contract.status === ContractStatus.Expired
+                                                ? 'bg-red-100 text-red-800'
+                                                : 'bg-gray-100 text-gray-800'
                                             }`}>
-                                            {contract.status}
+                                            {t(`contracts.statuses.${contract.status}`)}
                                         </span>
                                     </td>
                                 </tr>

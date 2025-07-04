@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useGuarantors, useDeleteGuarantor } from '../hooks/api';
 import type { Guarantor } from '../types';
 import GuarantorForm from './GuarantorForm';
+import { useTranslation } from 'react-i18next';
 
 export default function Guarantors() {
+    const { t } = useTranslation();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedGuarantor, setSelectedGuarantor] = useState<Guarantor | null>(null);
     const { data: guarantors = [], isLoading } = useGuarantors();
@@ -15,7 +17,7 @@ export default function Guarantors() {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm('Are you sure you want to delete this guarantor?')) {
+        if (window.confirm(t('guarantors.confirmDelete'))) {
             await deleteGuarantor.mutateAsync(id);
         }
     };
@@ -26,7 +28,7 @@ export default function Guarantors() {
     };
 
     if (isLoading) {
-        return <div className="flex justify-center items-center h-64">Loading...</div>;
+        return <div className="flex justify-center items-center h-64">{t('common.loading')}</div>;
     }
 
     return (
@@ -34,14 +36,14 @@ export default function Guarantors() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Guarantors</h1>
-                    <p className="text-gray-600">Manage your contract guarantors</p>
+                    <h1 className="text-2xl font-bold text-gray-900">{t('guarantors.title')}</h1>
+                    <p className="text-gray-600">{t('guarantors.subtitle')}</p>
                 </div>
                 <button
                     onClick={() => setIsFormOpen(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
                 >
-                    Add Guarantor
+                    {t('guarantors.addGuarantor')}
                 </button>
             </div>
 
@@ -51,19 +53,19 @@ export default function Guarantors() {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name
+                                {t('common.name')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Email
+                                {t('common.email')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Phone
+                                {t('common.phone')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Address
+                                {t('common.address')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
+                                {t('common.actions')}
                             </th>
                         </tr>
                     </thead>
@@ -94,13 +96,13 @@ export default function Guarantors() {
                                         onClick={() => handleEdit(guarantor)}
                                         className="text-blue-600 hover:text-blue-900 mr-3"
                                     >
-                                        Edit
+                                        {t('common.edit')}
                                     </button>
                                     <button
                                         onClick={() => handleDelete(guarantor.id)}
                                         className="text-red-600 hover:text-red-900"
                                     >
-                                        Delete
+                                        {t('common.delete')}
                                     </button>
                                 </td>
                             </tr>

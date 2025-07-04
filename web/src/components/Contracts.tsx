@@ -4,8 +4,10 @@ import type { Contract } from '../types';
 import { ContractStatus } from '../types';
 import { downloadFile } from '../utils';
 import ContractForm from './ContractForm';
+import { useTranslation } from 'react-i18next';
 
 export default function Contracts() {
+    const { t } = useTranslation();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
     const { data: contracts = [], isLoading } = useContracts();
@@ -18,7 +20,7 @@ export default function Contracts() {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm('Are you sure you want to delete this contract?')) {
+        if (window.confirm(t('contracts.confirmDelete'))) {
             await deleteContract.mutateAsync(id);
         }
     };
@@ -38,7 +40,7 @@ export default function Contracts() {
     };
 
     if (isLoading) {
-        return <div className="flex justify-center items-center h-64">Loading...</div>;
+        return <div className="flex justify-center items-center h-64">{t('common.loading')}</div>;
     }
 
     return (
@@ -46,14 +48,14 @@ export default function Contracts() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Contracts</h1>
-                    <p className="text-gray-600">Manage your rental contracts</p>
+                    <h1 className="text-2xl font-bold text-gray-900">{t('contracts.title')}</h1>
+                    <p className="text-gray-600">{t('contracts.subtitle')}</p>
                 </div>
                 <button
                     onClick={() => setIsFormOpen(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
                 >
-                    Add Contract
+                    {t('contracts.addContract')}
                 </button>
             </div>
 
@@ -63,25 +65,25 @@ export default function Contracts() {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Tenant
+                                {t('contracts.tenant')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Property
+                                {t('contracts.property')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Rent
+                                {t('contracts.rent')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Deposit
+                                {t('contracts.deposit')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Period
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
+                                {t('contracts.status')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
+                                {t('common.actions')}
                             </th>
                         </tr>
                     </thead>
@@ -124,12 +126,12 @@ export default function Contracts() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${contract.status === ContractStatus.Active
-                                            ? 'bg-green-100 text-green-800'
-                                            : contract.status === ContractStatus.Expired
-                                                ? 'bg-red-100 text-red-800'
-                                                : 'bg-gray-100 text-gray-800'
+                                        ? 'bg-green-100 text-green-800'
+                                        : contract.status === ContractStatus.Expired
+                                            ? 'bg-red-100 text-red-800'
+                                            : 'bg-gray-100 text-gray-800'
                                         }`}>
-                                        {contract.status}
+                                        {t(`contracts.statuses.${contract.status}`)}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -137,7 +139,7 @@ export default function Contracts() {
                                         onClick={() => handleEdit(contract)}
                                         className="text-blue-600 hover:text-blue-900 mr-3"
                                     >
-                                        Edit
+                                        {t('common.edit')}
                                     </button>
                                     <button
                                         onClick={() => handleGeneratePdf(contract.id, contract.tenant.name)}
@@ -149,7 +151,7 @@ export default function Contracts() {
                                         onClick={() => handleDelete(contract.id)}
                                         className="text-red-600 hover:text-red-900"
                                     >
-                                        Delete
+                                        {t('common.delete')}
                                     </button>
                                 </td>
                             </tr>

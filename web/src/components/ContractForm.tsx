@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useTenants, useAddresses, useGuarantors, useCreateContract, useUpdateContract } from '../hooks/api';
 import type { Contract, CreateContract, UpdateContract } from '../types';
 import { ContractStatus, ContractType } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface ContractFormProps {
     contract?: Contract | null;
@@ -23,6 +24,7 @@ interface FormData {
 }
 
 export default function ContractForm({ contract, onClose }: ContractFormProps) {
+    const { t } = useTranslation();
     const { data: tenants = [] } = useTenants();
     const { data: addresses = [] } = useAddresses();
     const { data: guarantors = [] } = useGuarantors();
@@ -87,20 +89,20 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <h2 className="text-xl font-bold mb-4">
-                    {contract ? 'Edit Contract' : 'Add New Contract'}
+                    {contract ? t('contracts.editContract') : t('contracts.addNewContract')}
                 </h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Tenant
+                                {t('contracts.tenant')}
                             </label>
                             <select
-                                {...register('tenantId', { required: 'Tenant is required' })}
+                                {...register('tenantId', { required: t('contracts.tenantRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value="">Select a tenant</option>
+                                <option value="">{t('contracts.selectTenant')}</option>
                                 {tenants.map((tenant) => (
                                     <option key={tenant.id} value={tenant.id}>
                                         {tenant.name}
@@ -114,13 +116,13 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Property Address
+                                {t('contracts.property')}
                             </label>
                             <select
-                                {...register('addressId', { required: 'Address is required' })}
+                                {...register('addressId', { required: t('contracts.propertyRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value="">Select an address</option>
+                                <option value="">{t('contracts.selectProperty')}</option>
                                 {addresses.map((address) => (
                                     <option key={address.id} value={address.id}>
                                         {address.street} {address.number}, {address.city}
@@ -134,12 +136,12 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Monthly Rent
+                                {t('contracts.rent')}
                             </label>
                             <input
                                 type="number"
                                 step="0.01"
-                                {...register('rent', { required: 'Rent is required', min: 0 })}
+                                {...register('rent', { required: t('contracts.rentRequired'), min: 0 })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors.rent && (
@@ -149,12 +151,12 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Security Deposit
+                                {t('contracts.deposit')}
                             </label>
                             <input
                                 type="number"
                                 step="0.01"
-                                {...register('deposit', { required: 'Deposit is required', min: 0 })}
+                                {...register('deposit', { required: t('contracts.depositRequired'), min: 0 })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors.deposit && (
@@ -164,11 +166,11 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Business Purpose
+                                {t('contracts.business')}
                             </label>
                             <input
                                 type="text"
-                                {...register('business', { required: 'Business purpose is required' })}
+                                {...register('business', { required: t('contracts.businessRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="e.g., Residential, Commercial"
                             />
@@ -179,13 +181,13 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Contract Type
+                                {t('contracts.type')}
                             </label>
                             <select
-                                {...register('type', { required: 'Contract type is required' })}
+                                {...register('type', { required: t('contracts.typeRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value={ContractType.Yearly}>Yearly</option>
+                                <option value={ContractType.Yearly}>{t('contracts.types.Yearly')}</option>
                             </select>
                             {errors.type && (
                                 <p className="text-red-600 text-sm mt-1">{errors.type.message}</p>
@@ -194,11 +196,11 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Start Date
+                                {t('contracts.startDate')}
                             </label>
                             <input
                                 type="date"
-                                {...register('startDate', { required: 'Start date is required' })}
+                                {...register('startDate', { required: t('contracts.startDateRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors.startDate && (
@@ -208,11 +210,11 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                End Date
+                                {t('contracts.endDate')}
                             </label>
                             <input
                                 type="date"
-                                {...register('endDate', { required: 'End date is required' })}
+                                {...register('endDate', { required: t('contracts.endDateRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors.endDate && (
@@ -222,15 +224,15 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Status
+                                {t('contracts.status')}
                             </label>
                             <select
-                                {...register('status', { required: 'Status is required' })}
+                                {...register('status', { required: t('contracts.statusRequired') })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value={ContractStatus.Active}>Active</option>
-                                <option value={ContractStatus.Expired}>Expired</option>
-                                <option value={ContractStatus.Terminated}>Terminated</option>
+                                <option value={ContractStatus.Active}>{t('contracts.statuses.Active')}</option>
+                                <option value={ContractStatus.Expired}>{t('contracts.statuses.Expired')}</option>
+                                <option value={ContractStatus.Terminated}>{t('contracts.statuses.Terminated')}</option>
                             </select>
                             {errors.status && (
                                 <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
@@ -240,7 +242,7 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Guarantors
+                            {t('contracts.guarantors')}
                         </label>
                         <div className="space-y-2 max-h-32 overflow-y-auto">
                             {guarantors.map((guarantor) => (
@@ -263,14 +265,14 @@ export default function ContractForm({ contract, onClose }: ContractFormProps) {
                             onClick={onClose}
                             className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
                             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
                         >
-                            {isSubmitting ? 'Saving...' : (contract ? 'Update' : 'Create')}
+                            {isSubmitting ? t('common.loading') : (contract ? t('common.update') : t('common.create'))}
                         </button>
                     </div>
                 </form>

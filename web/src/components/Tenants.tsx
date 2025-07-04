@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useTenants, useDeleteTenant } from '../hooks/api';
 import type { Tenant } from '../types';
 import TenantForm from './TenantForm';
+import { useTranslation } from 'react-i18next';
 
 export default function Tenants() {
+    const { t } = useTranslation();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
     const { data: tenants = [], isLoading } = useTenants();
@@ -15,7 +17,7 @@ export default function Tenants() {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm('Are you sure you want to delete this tenant?')) {
+        if (window.confirm(t('tenants.confirmDelete'))) {
             await deleteTenant.mutateAsync(id);
         }
     };
@@ -26,7 +28,7 @@ export default function Tenants() {
     };
 
     if (isLoading) {
-        return <div className="flex justify-center items-center h-64">Loading...</div>;
+        return <div className="flex justify-center items-center h-64">{t('common.loading')}</div>;
     }
 
     return (
@@ -34,14 +36,14 @@ export default function Tenants() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Tenants</h1>
-                    <p className="text-gray-600">Manage your tenants</p>
+                    <h1 className="text-2xl font-bold text-gray-900">{t('tenants.title')}</h1>
+                    <p className="text-gray-600">{t('tenants.subtitle')}</p>
                 </div>
                 <button
                     onClick={() => setIsFormOpen(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
                 >
-                    Add Tenant
+                    {t('tenants.addTenant')}
                 </button>
             </div>
 
@@ -51,22 +53,22 @@ export default function Tenants() {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name
+                                {t('common.name')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Email
+                                {t('common.email')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Phone
+                                {t('common.phone')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Address
+                                {t('common.address')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Contracts
+                                {t('navigation.contracts')}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
+                                {t('common.actions')}
                             </th>
                         </tr>
                     </thead>
@@ -94,7 +96,7 @@ export default function Tenants() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
-                                        {tenant.contracts?.length || 0} contracts
+                                        {tenant.contracts?.length || 0} {t('navigation.contracts').toLowerCase()}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -102,13 +104,13 @@ export default function Tenants() {
                                         onClick={() => handleEdit(tenant)}
                                         className="text-blue-600 hover:text-blue-900 mr-3"
                                     >
-                                        Edit
+                                        {t('common.edit')}
                                     </button>
                                     <button
                                         onClick={() => handleDelete(tenant.id)}
                                         className="text-red-600 hover:text-red-900"
                                     >
-                                        Delete
+                                        {t('common.delete')}
                                     </button>
                                 </td>
                             </tr>
