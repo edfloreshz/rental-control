@@ -33,7 +33,6 @@ func Logger() func(next http.Handler) http.Handler {
 	}
 }
 
-// Helper function to write JSON error responses
 func WriteJSONError(w http.ResponseWriter, statusCode int, errorMsg, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
