@@ -13,153 +13,180 @@ import type {
     UpdateTenant,
 } from "../types";
 
-const API_BASE_URL = "http://rentalcontrol:8080";
-
 class ApiService {
     private async request<T>(
         endpoint: string,
         options: RequestInit = {},
     ): Promise<T> {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            headers: {
-                "Content-Type": "application/json",
-                ...options.headers,
-            },
-            ...options,
+        console.log("Making API request to:", endpoint);
+
+        // Set headers for PostgREST compatibility
+        const headers = new Headers({
+            "Accept": "application/json",
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (options.body) {
+            headers.set("Content-Type", "application/json");
         }
 
-        return response.json();
+        // Add any additional headers from options
+        if (options.headers) {
+            const optionsHeaders = new Headers(options.headers);
+            optionsHeaders.forEach((value, key) => {
+                headers.set(key, value);
+            });
+        }
+
+        const response = await fetch(endpoint, {
+            ...options,
+            headers,
+        });
+
+        console.log("API response status:", response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("API error:", response.status, errorText);
+            throw new Error(
+                `HTTP error! status: ${response.status}, message: ${errorText}`,
+            );
+        }
+
+        // Handle 204 No Content responses
+        if (response.status === 204) {
+            return null as T;
+        }
+
+        const data = await response.json();
+        console.log("API response data:", data);
+        return data;
     }
 
     // Address endpoints
-    async getAddresses(): Promise<Address[]> {
+    getAddresses = (): Promise<Address[]> => {
         return this.request<Address[]>("/api/v1/address");
-    }
+    };
 
-    async getAddress(id: string): Promise<Address> {
+    getAddress = (id: string): Promise<Address> => {
         return this.request<Address>(`/api/v1/address/${id}`);
-    }
+    };
 
-    async createAddress(address: CreateAddress): Promise<Address> {
+    createAddress = (address: CreateAddress): Promise<Address> => {
         return this.request<Address>("/api/v1/address", {
             method: "POST",
-            body: JSON.stringify({ address }),
+            body: JSON.stringify(address),
         });
-    }
+    };
 
-    async updateAddress(address: UpdateAddress): Promise<Address> {
+    updateAddress = (address: UpdateAddress): Promise<Address> => {
         return this.request<Address>(`/api/v1/address/${address.id}`, {
             method: "PUT",
-            body: JSON.stringify({ address }),
+            body: JSON.stringify(address),
         });
-    }
+    };
 
-    async deleteAddress(id: string): Promise<void> {
+    deleteAddress = (id: string): Promise<void> => {
         return this.request<void>(`/api/v1/address/${id}`, {
             method: "DELETE",
         });
-    }
+    };
 
     // Tenant endpoints
-    async getTenants(): Promise<Tenant[]> {
+    getTenants = (): Promise<Tenant[]> => {
         return this.request<Tenant[]>("/api/v1/tenant");
-    }
+    };
 
-    async getTenant(id: string): Promise<Tenant> {
+    getTenant = (id: string): Promise<Tenant> => {
         return this.request<Tenant>(`/api/v1/tenant/${id}`);
-    }
+    };
 
-    async createTenant(tenant: CreateTenant): Promise<Tenant> {
+    createTenant = (tenant: CreateTenant): Promise<Tenant> => {
         return this.request<Tenant>("/api/v1/tenant", {
             method: "POST",
-            body: JSON.stringify({ tenant }),
+            body: JSON.stringify(tenant),
         });
-    }
+    };
 
-    async updateTenant(tenant: UpdateTenant): Promise<Tenant> {
+    updateTenant = (tenant: UpdateTenant): Promise<Tenant> => {
         return this.request<Tenant>(`/api/v1/tenant/${tenant.id}`, {
             method: "PUT",
-            body: JSON.stringify({ tenant }),
+            body: JSON.stringify(tenant),
         });
-    }
+    };
 
-    async deleteTenant(id: string): Promise<void> {
+    deleteTenant = (id: string): Promise<void> => {
         return this.request<void>(`/api/v1/tenant/${id}`, {
             method: "DELETE",
         });
-    }
+    };
 
     // Guarantor endpoints
-    async getGuarantors(): Promise<Guarantor[]> {
+    getGuarantors = (): Promise<Guarantor[]> => {
         return this.request<Guarantor[]>("/api/v1/guarantor");
-    }
+    };
 
-    async getGuarantor(id: string): Promise<Guarantor> {
+    getGuarantor = (id: string): Promise<Guarantor> => {
         return this.request<Guarantor>(`/api/v1/guarantor/${id}`);
-    }
+    };
 
-    async createGuarantor(guarantor: CreateGuarantor): Promise<Guarantor> {
+    createGuarantor = (guarantor: CreateGuarantor): Promise<Guarantor> => {
         return this.request<Guarantor>("/api/v1/guarantor", {
             method: "POST",
-            body: JSON.stringify({ guarantor }),
+            body: JSON.stringify(guarantor),
         });
-    }
+    };
 
-    async updateGuarantor(guarantor: UpdateGuarantor): Promise<Guarantor> {
+    updateGuarantor = (guarantor: UpdateGuarantor): Promise<Guarantor> => {
         return this.request<Guarantor>(`/api/v1/guarantor/${guarantor.id}`, {
             method: "PUT",
-            body: JSON.stringify({ guarantor }),
+            body: JSON.stringify(guarantor),
         });
-    }
+    };
 
-    async deleteGuarantor(id: string): Promise<void> {
+    deleteGuarantor = (id: string): Promise<void> => {
         return this.request<void>(`/api/v1/guarantor/${id}`, {
             method: "DELETE",
         });
-    }
+    };
 
     // Contract endpoints
-    async getContracts(): Promise<Contract[]> {
+    getContracts = (): Promise<Contract[]> => {
         return this.request<Contract[]>("/api/v1/contract");
-    }
+    };
 
-    async getContract(id: string): Promise<Contract> {
+    getContract = (id: string): Promise<Contract> => {
         return this.request<Contract>(`/api/v1/contract/${id}`);
-    }
+    };
 
-    async createContract(contract: CreateContract): Promise<Contract> {
+    createContract = (contract: CreateContract): Promise<Contract> => {
         return this.request<Contract>("/api/v1/contract", {
             method: "POST",
-            body: JSON.stringify({ contract }),
+            body: JSON.stringify(contract),
         });
-    }
+    };
 
-    async updateContract(contract: UpdateContract): Promise<Contract> {
+    updateContract = (contract: UpdateContract): Promise<Contract> => {
         return this.request<Contract>(`/api/v1/contract/${contract.id}`, {
             method: "PUT",
-            body: JSON.stringify({ contract }),
+            body: JSON.stringify(contract),
         });
-    }
+    };
 
-    async deleteContract(id: string): Promise<void> {
+    deleteContract = (id: string): Promise<void> => {
         return this.request<void>(`/api/v1/contract/${id}`, {
             method: "DELETE",
         });
-    }
+    };
 
-    async generateContractPdf(id: string): Promise<Blob> {
-        const response = await fetch(
-            `${API_BASE_URL}/api/v1/contract/${id}/pdf`,
-        );
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.blob();
-    }
+    generateContractPdf = (id: string): Promise<Blob> => {
+        return fetch(`/api/v1/contract/${id}/pdf`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.blob();
+            });
+    };
 }
 
 export const apiService = new ApiService();

@@ -8,7 +8,7 @@ export interface Address {
     zipCode: string;
     country: string;
     createdAt: string;
-    contracts: Contract[];
+    contracts: Contract[] | null;
 }
 
 export interface Tenant {
@@ -19,7 +19,7 @@ export interface Tenant {
     phone: string;
     createdAt: string;
     address: Address;
-    contracts: Contract[];
+    contracts: Contract[] | null;
 }
 
 export interface Guarantor {

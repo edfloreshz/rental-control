@@ -8,7 +8,17 @@ import Addresses from './components/Addresses';
 import Guarantors from './components/Guarantors';
 import './App.css';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
 
 function App() {
   return (

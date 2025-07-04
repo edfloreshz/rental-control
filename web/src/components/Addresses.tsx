@@ -6,8 +6,10 @@ import AddressForm from './AddressForm';
 export default function Addresses() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-    const { data: addresses = [], isLoading } = useAddresses();
+    const { data: addresses = [], isLoading, error } = useAddresses();
     const deleteAddress = useDeleteAddress();
+
+    console.log('Addresses component - loading:', isLoading, 'error:', error, 'data:', addresses);
 
     const handleEdit = (address: Address) => {
         setSelectedAddress(address);
@@ -27,6 +29,44 @@ export default function Addresses() {
 
     if (isLoading) {
         return <div className="flex justify-center items-center h-64">Loading...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="text-red-600">
+                    Error loading addresses: {error.message}
+                </div>
+            </div>
+        );
+    }
+
+    if (!addresses || addresses.length === 0) {
+        return (
+            <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">Addresses</h1>
+                        <p className="text-gray-600">Manage your property addresses</p>
+                    </div>
+                    <button
+                        onClick={() => setIsFormOpen(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+                    >
+                        Add Address
+                    </button>
+                </div>
+                <div className="text-center py-12">
+                    <p className="text-gray-500">No addresses found. Add your first address to get started.</p>
+                </div>
+                {isFormOpen && (
+                    <AddressForm
+                        address={selectedAddress}
+                        onClose={handleCloseForm}
+                    />
+                )}
+            </div>
+        );
     }
 
     return (
@@ -68,7 +108,7 @@ export default function Addresses() {
 
                         <div className="mb-4">
                             <div className="text-sm text-gray-500">
-                                Active Contracts: {address.contracts.length}
+                                Active Contracts: {address.contracts?.length || 0}
                             </div>
                             <div className="text-sm text-gray-500">
                                 Added: {new Date(address.createdAt).toLocaleDateString()}

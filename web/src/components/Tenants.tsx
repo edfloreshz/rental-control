@@ -94,7 +94,7 @@ export default function Tenants() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">
-                                        {tenant.contracts.length} contracts
+                                        {tenant.contracts?.length || 0} contracts
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

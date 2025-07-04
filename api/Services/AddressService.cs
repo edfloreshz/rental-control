@@ -12,10 +12,24 @@ public class AddressService(Client client)
     {
         try
         {
-            var contracts = await client
+            var addresses = await client
                 .Table<Entities.Address>()
                 .Get(cancellationToken);
-            return contracts.Models.Adapt<Models.Get.Address[]>();
+            
+            var result = addresses.Models.Select(address => new Models.Get.Address(
+                address.Id,
+                address.Street,
+                address.Number,
+                address.Neighborhood,
+                address.City,
+                address.State,
+                address.ZipCode,
+                address.Country,
+                address.CreatedAt,
+                new List<Models.Get.Contract>() // Empty contracts list for now
+            )).ToArray();
+            
+            return Result.Success(result);
         }
         catch (Exception e)
         {
@@ -27,13 +41,28 @@ public class AddressService(Client client)
     {
         try
         {
-            var contract = await client
+            var address = await client
                 .Table<Entities.Address>()
                 .Where(x => x.Id == id)
                 .Single(cancellationToken);
-            return contract is null
-                ? Result.Failure<Models.Get.Address>("Address not found")
-                : contract.Adapt<Models.Get.Address>();
+            
+            if (address is null)
+                return Result.Failure<Models.Get.Address>("Address not found");
+                
+            var result = new Models.Get.Address(
+                address.Id,
+                address.Street,
+                address.Number,
+                address.Neighborhood,
+                address.City,
+                address.State,
+                address.ZipCode,
+                address.Country,
+                address.CreatedAt,
+                new List<Models.Get.Contract>() // Empty contracts list for now
+            );
+            
+            return Result.Success(result);
         }
         catch (Exception e)
         {
