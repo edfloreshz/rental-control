@@ -111,6 +111,7 @@
         "state": "Estado",
         "zipCode": "Código Postal",
         "country": "País",
+        "type": "Tipo",
         "streetRequired": "La calle es obligatoria",
         "numberRequired": "El número es obligatorio",
         "neighborhoodRequired": "El barrio es obligatorio",
@@ -118,8 +119,18 @@
         "stateRequired": "El estado es obligatorio",
         "zipCodeRequired": "El código postal es obligatorio",
         "countryRequired": "El país es obligatorio",
+        "typeRequired": "El tipo es obligatorio",
         "noAddresses": "No se encontraron direcciones",
-        "fullAddress": "Dirección Completa"
+        "fullAddress": "Dirección Completa",
+        "types": {
+            "tenant": "Dirección de Inquilino",
+            "property": "Dirección de Propiedad"
+        },
+        "filters": {
+            "all": "Todas las Direcciones",
+            "tenant": "Direcciones de Inquilinos",
+            "property": "Direcciones de Propiedades"
+        }
     },
     "guarantors": {
         "title": "Referencias",

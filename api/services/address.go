@@ -34,6 +34,32 @@ func (s *AddressService) GetAll() ([]dto.AddressResponse, error) {
 			State:        addr.State,
 			ZipCode:      addr.ZipCode,
 			Country:      addr.Country,
+			Type:         addr.Type,
+			CreatedAt:    addr.CreatedAt,
+		})
+	}
+
+	return response, nil
+}
+
+func (s *AddressService) GetByType(addressType models.AddressType) ([]dto.AddressResponse, error) {
+	var addresses []models.Address
+	if err := s.db.Where("type = ?", addressType).Find(&addresses).Error; err != nil {
+		return nil, err
+	}
+
+	var response []dto.AddressResponse
+	for _, addr := range addresses {
+		response = append(response, dto.AddressResponse{
+			ID:           addr.ID,
+			Street:       addr.Street,
+			Number:       addr.Number,
+			Neighborhood: addr.Neighborhood,
+			City:         addr.City,
+			State:        addr.State,
+			ZipCode:      addr.ZipCode,
+			Country:      addr.Country,
+			Type:         addr.Type,
 			CreatedAt:    addr.CreatedAt,
 		})
 	}
@@ -59,6 +85,7 @@ func (s *AddressService) GetByID(id uuid.UUID) (*dto.AddressResponse, error) {
 		State:        address.State,
 		ZipCode:      address.ZipCode,
 		Country:      address.Country,
+		Type:         address.Type,
 		CreatedAt:    address.CreatedAt,
 	}, nil
 }
@@ -72,6 +99,7 @@ func (s *AddressService) Create(req dto.CreateAddressRequest) (*dto.AddressRespo
 		State:        req.State,
 		ZipCode:      req.ZipCode,
 		Country:      req.Country,
+		Type:         req.Type,
 	}
 
 	if err := s.db.Create(&address).Error; err != nil {
@@ -87,6 +115,7 @@ func (s *AddressService) Create(req dto.CreateAddressRequest) (*dto.AddressRespo
 		State:        address.State,
 		ZipCode:      address.ZipCode,
 		Country:      address.Country,
+		Type:         address.Type,
 		CreatedAt:    address.CreatedAt,
 	}, nil
 }
@@ -122,6 +151,9 @@ func (s *AddressService) Update(req dto.UpdateAddressRequest) (*dto.AddressRespo
 	if req.Country != "" {
 		address.Country = req.Country
 	}
+	if req.Type != "" {
+		address.Type = req.Type
+	}
 
 	if err := s.db.Save(&address).Error; err != nil {
 		return nil, err
@@ -136,6 +168,7 @@ func (s *AddressService) Update(req dto.UpdateAddressRequest) (*dto.AddressRespo
 		State:        address.State,
 		ZipCode:      address.ZipCode,
 		Country:      address.Country,
+		Type:         address.Type,
 		CreatedAt:    address.CreatedAt,
 	}, nil
 }

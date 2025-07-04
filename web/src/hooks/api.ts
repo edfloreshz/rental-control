@@ -9,6 +9,20 @@ export const useAddresses = () => {
     });
 };
 
+export const useTenantAddresses = () => {
+    return useQuery({
+        queryKey: ["addresses", "tenant"],
+        queryFn: apiService.getTenantAddresses,
+    });
+};
+
+export const usePropertyAddresses = () => {
+    return useQuery({
+        queryKey: ["addresses", "property"],
+        queryFn: apiService.getPropertyAddresses,
+    });
+};
+
 export const useAddress = (id: string) => {
     return useQuery({
         queryKey: ["address", id],

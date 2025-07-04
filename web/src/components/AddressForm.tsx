@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCreateAddress, useUpdateAddress } from '../hooks/api';
 import type { Address, CreateAddress, UpdateAddress } from '../types';
+import { AddressType } from '../types';
 import { useTranslation } from 'react-i18next';
 
 interface AddressFormProps {
@@ -17,6 +18,7 @@ interface FormData {
     state: string;
     zipCode: string;
     country: string;
+    type: AddressType;
 }
 
 export default function AddressForm({ address, onClose }: AddressFormProps) {
@@ -34,6 +36,7 @@ export default function AddressForm({ address, onClose }: AddressFormProps) {
             state: address?.state || '',
             zipCode: address?.zipCode || '',
             country: address?.country || '',
+            type: address?.type || AddressType.Property,
         },
     });
 
@@ -47,6 +50,7 @@ export default function AddressForm({ address, onClose }: AddressFormProps) {
                 state: address.state,
                 zipCode: address.zipCode,
                 country: address.country,
+                type: address.type,
             });
         }
     }, [address, reset]);
@@ -175,6 +179,22 @@ export default function AddressForm({ address, onClose }: AddressFormProps) {
                         />
                         {errors.country && (
                             <p className="text-red-600 text-sm mt-1">{errors.country.message}</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('addresses.type')}
+                        </label>
+                        <select
+                            {...register('type', { required: t('addresses.typeRequired') })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value={AddressType.Property}>{t('addresses.types.property')}</option>
+                            <option value={AddressType.Tenant}>{t('addresses.types.tenant')}</option>
+                        </select>
+                        {errors.type && (
+                            <p className="text-red-600 text-sm mt-1">{errors.type.message}</p>
                         )}
                     </div>
 

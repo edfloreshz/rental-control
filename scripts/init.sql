@@ -1,25 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-GRANT ALL PRIVILEGES ON DATABASE "RentalControl" TO rentalcontrol;
-
--- Create an event trigger function
-CREATE
-    OR REPLACE FUNCTION pgrst_watch() RETURNS event_trigger
-    LANGUAGE plpgsql
-AS
-$$
-BEGIN
-    NOTIFY
-        pgrst, 'reload schema';
-END;
-$$;
-
--- This event trigger will fire after every ddl_command_end event
-CREATE
-    EVENT TRIGGER pgrst_watch
-    ON ddl_command_end
-EXECUTE PROCEDURE pgrst_watch();
-
 CREATE TABLE "Addresses" (
     "Id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "Street" TEXT NOT NULL,
@@ -29,6 +7,7 @@ CREATE TABLE "Addresses" (
     "State" TEXT NOT NULL,
     "ZipCode" TEXT NOT NULL,
     "Country" TEXT NOT NULL,
+    "Type" TEXT NOT NULL DEFAULT 'property' CHECK ("Type" IN ('tenant', 'property')),
     "CreatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

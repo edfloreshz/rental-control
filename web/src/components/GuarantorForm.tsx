@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAddresses, useCreateGuarantor, useUpdateGuarantor } from '../hooks/api';
+import { useTenantAddresses, useCreateGuarantor, useUpdateGuarantor } from '../hooks/api';
 import type { Guarantor, CreateGuarantor, UpdateGuarantor } from '../types';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ interface FormData {
 
 export default function GuarantorForm({ guarantor, onClose }: GuarantorFormProps) {
     const { t } = useTranslation();
-    const { data: addresses = [] } = useAddresses();
+    const { data: addresses = [] } = useTenantAddresses();
     const createGuarantor = useCreateGuarantor();
     const updateGuarantor = useUpdateGuarantor();
     const [isSubmitting, setIsSubmitting] = useState(false);

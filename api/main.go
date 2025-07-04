@@ -85,9 +85,9 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"message": "Rent Control API", "version": "1.0"})
 	})
 
-	r.Get("/reference", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/scalar", func(w http.ResponseWriter, r *http.Request) {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
-			SpecURL: "https://generator3.swagger.io/openapi.json", // allow external URL or local path file
+			SpecURL: "https://generator3.swagger.io/openapi.json",
 			CustomOptions: scalar.CustomOptions{
 				PageTitle: "Rent Control API Documentation",
 			},

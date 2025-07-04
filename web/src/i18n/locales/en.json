@@ -110,6 +110,7 @@
         "state": "State",
         "zipCode": "ZIP Code",
         "country": "Country",
+        "type": "Type",
         "streetRequired": "Street is required",
         "numberRequired": "Number is required",
         "neighborhoodRequired": "Neighborhood is required",
@@ -117,8 +118,18 @@
         "stateRequired": "State is required",
         "zipCodeRequired": "ZIP code is required",
         "countryRequired": "Country is required",
+        "typeRequired": "Type is required",
         "noAddresses": "No addresses found",
-        "fullAddress": "Full Address"
+        "fullAddress": "Full Address",
+        "types": {
+            "tenant": "Tenant Address",
+            "property": "Property Address"
+        },
+        "filters": {
+            "all": "All Addresses",
+            "tenant": "Tenant Addresses",
+            "property": "Property Addresses"
+        }
     },
     "guarantors": {
         "title": "Guarantors",

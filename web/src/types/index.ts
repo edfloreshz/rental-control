@@ -1,3 +1,10 @@
+export const AddressType = {
+    Tenant: "tenant",
+    Property: "property",
+} as const;
+
+export type AddressType = typeof AddressType[keyof typeof AddressType];
+
 export interface Address {
     id: string;
     street: string;
@@ -7,6 +14,7 @@ export interface Address {
     state: string;
     zipCode: string;
     country: string;
+    type: AddressType;
     createdAt: string;
     contracts: Contract[] | null;
 }
@@ -79,6 +87,7 @@ export interface CreateAddress {
     state: string;
     zipCode: string;
     country: string;
+    type: AddressType;
 }
 
 export interface CreateGuarantor {
@@ -119,6 +128,7 @@ export interface UpdateAddress {
     state: string;
     zipCode: string;
     country: string;
+    type: AddressType;
 }
 
 export interface UpdateGuarantor {

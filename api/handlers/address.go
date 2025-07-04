@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"rent-control-api/dto"
 	"rent-control-api/middleware"
+	"rent-control-api/models"
 	"rent-control-api/services"
 
 	"github.com/go-chi/chi/v5"
@@ -17,10 +18,17 @@ func SetupAddressRoutes(r chi.Router, db *gorm.DB) {
 
 	r.Route("/addresses", func(r chi.Router) {
 		r.Get("/", listAddresses(service))
-		r.Get("/{id}", getAddress(service))
 		r.Post("/", createAddress(service))
+
+		// Use a different pattern to avoid conflict
+		r.Route("/filter", func(r chi.Router) {
+			r.Get("/tenant", listTenantAddresses(service))
+			r.Get("/property", listPropertyAddresses(service))
+		})
+
 		r.Put("/{id}", updateAddress(service))
 		r.Delete("/{id}", deleteAddress(service))
+		r.Get("/{id}", getAddress(service))
 	})
 }
 
@@ -124,5 +132,31 @@ func deleteAddress(service *services.AddressService) http.HandlerFunc {
 		}
 
 		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func listTenantAddresses(service *services.AddressService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		addresses, err := service.GetByType(models.AddressTypeTenant)
+		if err != nil {
+			middleware.WriteJSONError(w, http.StatusInternalServerError, "Failed to retrieve tenant addresses", err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(addresses)
+	}
+}
+
+func listPropertyAddresses(service *services.AddressService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		addresses, err := service.GetByType(models.AddressTypeProperty)
+		if err != nil {
+			middleware.WriteJSONError(w, http.StatusInternalServerError, "Failed to retrieve property addresses", err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(addresses)
 	}
 }

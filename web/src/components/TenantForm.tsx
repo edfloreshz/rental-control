@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAddresses, useCreateTenant, useUpdateTenant } from '../hooks/api';
+import { useTenantAddresses, useCreateTenant, useUpdateTenant } from '../hooks/api';
 import type { Tenant, CreateTenant, UpdateTenant } from '../types';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ interface FormData {
 
 export default function TenantForm({ tenant, onClose }: TenantFormProps) {
     const { t } = useTranslation();
-    const { data: addresses = [] } = useAddresses();
+    const { data: addresses = [] } = useTenantAddresses();
     const createTenant = useCreateTenant();
     const updateTenant = useUpdateTenant();
     const [isSubmitting, setIsSubmitting] = useState(false);

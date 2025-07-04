@@ -190,6 +190,14 @@ class ApiService {
         return this.request<Address[]>("/api/v1/addresses");
     };
 
+    getTenantAddresses = (): Promise<Address[]> => {
+        return this.request<Address[]>("/api/v1/addresses/tenant");
+    };
+
+    getPropertyAddresses = (): Promise<Address[]> => {
+        return this.request<Address[]>("/api/v1/addresses/property");
+    };
+
     getAddress = (id: string): Promise<Address> => {
         return this.request<Address>(`/api/v1/addresses/${id}`);
     };
