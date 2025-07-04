@@ -13,7 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./Scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
   postgrest:
     image: postgrest/postgrest
@@ -29,10 +29,19 @@ services:
       - db
 
   rentalcontrol:
-    image: rentalcontrol
-    container_name: rental-control-app
+    container_name: rental-control-api
     ports:
       - "8080:8080"
     build:
       context: .
-      dockerfile: RentalControl/Dockerfile
+      dockerfile: api/Dockerfile
+
+  web:
+    container_name: rental-control-web
+    ports:
+      - "3001:80"
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    depends_on:
+      - rentalcontrol
